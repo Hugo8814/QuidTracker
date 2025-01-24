@@ -1,0 +1,86 @@
+/* Define Public Sans font-face
+@font-face {
+  font-family: "Public Sans";
+  src: url("../Temp/assets/fonts/PublicSans-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Public Sans";
+  src: url("../Temp/assets/fonts/PublicSans-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+} */
+
+/* Tailwind CSS imports */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Apply global styles */
+html {
+  font-size: 62.5%; /* This sets the root font size to 10px */
+  font-family: "Public Sans"; /* Set Public Sans as the default font */
+}
+
+/* For screens up to 1200px (Large desktops) */
+@media (max-width: 1200px) {
+  html {
+    font-size: 60%; /* 1rem = 9.6px */
+  }
+}
+
+/* For screens up to 992px (Tablets and small desktops) */
+@media (max-width: 992px) {
+  html {
+    font-size: 57.5%; /* 1rem = 9.2px */
+  }
+}
+
+/* For screens up to 768px (Portrait tablets and large phones) */
+@media (max-width: 768px) {
+  html {
+    font-size: 55%; /* 1rem = 8.8px */
+  }
+}
+
+/* For screens up to 576px (Mobile phones) */
+@media (max-width: 576px) {
+  html {
+    font-size: 52.5%; /* 1rem = 8.4px */
+  }
+}
+
+/* For very small screens (Tiny phones and very narrow devices) */
+@media (max-width: 375px) {
+  html {
+    font-size: 50%; /* 1rem = 8px */
+  }
+}
+.loader {
+  width: 45px;
+  aspect-ratio: 0.75;
+  --c: no-repeat linear-gradient(theme(colors.stone.800) 0 0);
+  background: var(--c) 0% 50%, var(--c) 50% 50%, var(--c) 100% 50%;
+  background-size: 20% 50%;
+  animation: loading 1s infinite linear;
+}
+
+@keyframes loading {
+  20% {
+    background-position: 0% 0%, 50% 50%, 100% 50%;
+  }
+
+  40% {
+    background-position: 0% 100%, 50% 0%, 100% 50%;
+  }
+
+  60% {
+    background-position: 0% 50%, 50% 100%, 100% 0%;
+  }
+
+  80% {
+    background-position: 0% 50%, 50% 50%, 100% 100%;
+  }
+}
