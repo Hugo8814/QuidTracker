@@ -1,6 +1,9 @@
 const fetch = require("node-fetch");
 
 async function getUserData(accessToken) {
+  if (!accessToken) {
+    throw new Error('Access token is missing.');
+  }
   const response = await fetch(
     "https://api.truelayer-sandbox.com/data/v1/accounts",
     {
