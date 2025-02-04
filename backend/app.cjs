@@ -3,6 +3,7 @@ const cors = require("cors");
 const fetch = require("node-fetch");
 const dotenv = require("dotenv");
 const trueLayerRoutes = require("./routes/truelayerRoutes.cjs");
+const morgan = require("morgan");
 //const trueLayerRoutes = require("./routes/trueLayerRoutes.cjs");
 
 dotenv.config(); // Load environment variables from .env file
@@ -10,14 +11,19 @@ dotenv.config(); // Load environment variables from .env file
 const app = express();
 const port = process.env.PORT || 3000;
 
-// 1) midware
+// middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
 app.use((req, res, next) => {
   console.log("hello from middleware");
   next();
 });
+
 
 // 2) ROUTES
 app.use("/api/truelayer", trueLayerRoutes);
@@ -61,4 +67,5 @@ app.post("/get-token", async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
+  console.log("NODE_ENV:", process.env.NODE_ENV);
 });
