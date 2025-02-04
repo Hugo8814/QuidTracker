@@ -23,6 +23,7 @@ app.use((req, res, next) => {
   console.log("hello from middleware");
   next();
 });
+//
 
 
 // 2) ROUTES
