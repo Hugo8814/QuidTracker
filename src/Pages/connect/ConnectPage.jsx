@@ -1,5 +1,7 @@
 // import dotenv from "dotenv";
 
+import { useEffect } from "react";
+
 // dotenv.config();
 
 function ConnectPage() {
@@ -10,6 +12,38 @@ function ConnectPage() {
   const urlParams = new URLSearchParams(window.location.search);
   const authorizationCode = urlParams.get("code");
   console.log(authorizationCode);
+
+  useEffect(() => {
+    if (authorizationCode) {
+      getAccessToken(authorizationCode);
+    }
+  }, [authorizationCode]);
+
+  async function getAccessToken(authorizationCode) {
+    try {
+      const res = await fetch(
+        "https://auth.truelayer-sandbox.com/connect/token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({
+            grant_type: "authorization_code",
+            client_id: "sandbox-quidtracker-48cd14",
+            client_secret: "sandbox-quidtracker-48cd14",
+            redirect_uri: "http://localhost:5173/connect",
+            code: authorizationCode,
+          }),
+        }
+      );
+      const data = await res.json();
+      console.log(data);
+      console.log("Access Token:", data.access_token);
+    } catch (error) {
+      console.error(`error fetching access token:`, error);
+    }
+  }
 
   return (
     <div className="shadow-xl flex justify-center items-center p-5 h-screen bg-[#919190] max-1100:flex-col max-1100:p-0">
