@@ -14,30 +14,29 @@ function ConnectPage() {
   console.log(authorizationCode);
 
   useEffect(() => {
+    console.log("Authorization code in useEffect:", authorizationCode); // Add this line
     if (authorizationCode) {
       getAccessToken(authorizationCode);
     }
   }, [authorizationCode]);
 
   async function getAccessToken(authorizationCode) {
+    if (!authorizationCode) {
+      console.error("No authorization code found!");
+      return;
+    }
     try {
-      const res = await fetch(
-        "https://auth.truelayer-sandbox.com/connect/token",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: new URLSearchParams({
-            grant_type: "authorization_code",
-            client_id: "sandbox-quidtracker-48cd14",
-            client_secret: "sandbox-quidtracker-48cd14",
-            redirect_uri: "http://localhost:5173/connect",
-            code: authorizationCode,
-          }),
-        }
-      );
+      const res = await fetch("http://localhost:3000/get-token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({ code: authorizationCode }), // Wrap in an object
+      });
       const data = await res.json();
+      if (res.ok) {
+        throw new Error(JSON.stringify(data));
+      }
       console.log(data);
       console.log("Access Token:", data.access_token);
     } catch (error) {
