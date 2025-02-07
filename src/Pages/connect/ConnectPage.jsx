@@ -21,24 +21,27 @@ function ConnectPage() {
   }, [authorizationCode]);
 
   async function getAccessToken(authorizationCode) {
+    console.log("Authorization code:", authorizationCode);
     if (!authorizationCode) {
       console.error("No authorization code found!");
       return;
     }
     try {
+      const requestBody = new URLSearchParams({ code: authorizationCode });
+      console.log("Request body:", requestBody.toString()); // Add this line
       const res = await fetch("http://localhost:3000/get-token", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        body: new URLSearchParams({ code: authorizationCode }), // Wrap in an object
+        body: requestBody,
       });
       const data = await res.json();
-      if (res.ok) {
-        throw new Error(JSON.stringify(data));
-      }
-      console.log(data);
+
       console.log("Access Token:", data.access_token);
+      if (data.access_token) {
+        localStorage.setItem("access_token", data.access_token);
+      }
     } catch (error) {
       console.error(`error fetching access token:`, error);
     }
