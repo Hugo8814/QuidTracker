@@ -17,7 +17,6 @@ const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = "http://localhost:5173/connect";
 
 app.post("/get-token", async (req, res) => {
-  
   const { code } = req.body; // Change this line
   if (!code) {
     return res.status(400).json({ error: "Authorization code is required" });
