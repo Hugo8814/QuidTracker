@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const fetch = require("node-fetch");
 const dotenv = require("dotenv");
+const trueLayerRoutes = require("./routes/trueLayerRoutes.cjs");
 
 dotenv.config(); // Load environment variables from .env file
 
@@ -12,6 +13,7 @@ app.use(express.json());
 
 app.use(express.urlencoded({ extended: true }));
 
+app.use("/api/truelayer", trueLayerRoutes);
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = "http://localhost:5173/connect";
