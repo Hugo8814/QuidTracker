@@ -10,12 +10,16 @@ dotenv.config(); // Load environment variables from .env file
 const app = express();
 const port = process.env.PORT || 3000;
 
-// midware
+// 1) midware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+
+// 2) ROUTES
 app.use("/api/truelayer", trueLayerRoutes);
+
+
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = "http://localhost:5173/connect";
