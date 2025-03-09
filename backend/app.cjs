@@ -66,7 +66,5 @@ app.post("/get-token", async (req, res) => {
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
-  console.log("NODE_ENV:", process.env.NODE_ENV);
-});
+
+module.exports = app;

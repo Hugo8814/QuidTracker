@@ -4,7 +4,8 @@
   "description": "",
   "main": "app.cjs",
   "scripts": {
-    "start": "nodemon app.cjs",
+     "start": "nodemon server.cjs",
+    "start:prod": "cross-env NODE_ENV=production nodemon server.cjs",
     "predeploy": "npm install"
   },
   "keywords": [],
