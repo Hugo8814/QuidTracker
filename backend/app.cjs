@@ -1,15 +1,16 @@
 const express = require("express");
 const cors = require("cors");
-const fetch = require("node-fetch");
 const dotenv = require("dotenv");
 const trueLayerRoutes = require("./routes/truelayerRoutes.cjs");
 const morgan = require("morgan");
+const authRouter = require("./routes/authRoutes.cjs");
+const mongoose = require("mongoose");
+const Transaction = require("./models/Transaction.cjs");
 //const trueLayerRoutes = require("./routes/trueLayerRoutes.cjs");
 
 dotenv.config(); // Load environment variables from .env file
 
 const app = express();
-const port = process.env.PORT || 3000;
 
 // middleware
 app.use(cors());
@@ -25,46 +26,54 @@ app.use((req, res, next) => {
 });
 //
 
-
 // 2) ROUTES
 app.use("/api/truelayer", trueLayerRoutes);
 
-const CLIENT_ID = process.env.CLIENT_ID;
-const CLIENT_SECRET = process.env.CLIENT_SECRET;
-const REDIRECT_URI = "http://localhost:5173/connect";
+app.use("/api/auth", authRouter);
 
-app.post("/get-token", async (req, res) => {
-  const { code } = req.body; // Change this line
-  if (!code) {
-    return res.status(400).json({ error: "Authorization code is required" });
-  }
-  try {
-    const tokenResponse = await fetch(
-      "https://auth.truelayer-sandbox.com/connect/token",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: new URLSearchParams({
-          grant_type: "authorization_code",
-          client_id: CLIENT_ID,
-          client_secret: CLIENT_SECRET,
-          redirect_uri: REDIRECT_URI,
-          code: code,
-        }),
-      }
-    );
-    const tokenData = await tokenResponse.json();
-    if (!tokenResponse.ok) {
-      throw new Error(JSON.stringify(tokenData));
-    }
-    res.json(tokenData); // Send access token back to frontend
-  } catch (error) {
-    console.error("Error fetching access token:", error);
-    res.status(500).json({ error: "Failed to fetch access token" });
-  }
+const userId = new mongoose.Types.ObjectId();
+
+const Balance = require("./models/Balance.cjs");
+
+const cardBalance = new Balance({
+  userID: userId,
+  type: "card",
+  currency: "GBP",
+  available: 99.0,
+  current: 21.0,
+  credit_limit: 120.0,
+  last_statement_date: "2025-03-06T00:00:00Z",
+  last_statement_balance: 2.0,
+  payment_due: 3.0,
+  payment_due_date: "2025-04-01T00:00:00Z",
+  update_timestamp: "2025-03-10T03:23:32.8191776Z",
+});
+cardBalance
+  .save()
+  .then(() => {
+    console.log("Card balance saved");
+  })
+  .catch((err) => {
+    console.error("Error saving card balance:", err);
+  });
+
+const accountBalance = new Balance({
+  userID: userId,
+  type: "account",
+  currency: "GBP",
+  available: 111.0,
+  current: 11.0,
+  overdraft: 100.0,
+  update_timestamp: "2025-03-10T03:25:44.7706046Z",
 });
 
+accountBalance
+  .save()
+  .then(() => {
+    console.log("Card balance saved");
+  })
+  .catch((err) => {
+    console.error("Error saving card balance:", err);
+  });
 
 module.exports = app;

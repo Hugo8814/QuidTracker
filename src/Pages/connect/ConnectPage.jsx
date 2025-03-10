@@ -14,7 +14,7 @@ function ConnectPage() {
   console.log(authorizationCode);
 
   useEffect(() => {
-    console.log("Authorization code in useEffect:", authorizationCode); // Add this line
+    console.log("Authorization code in useEffect:", authorizationCode);
     if (authorizationCode) {
       getAccessToken(authorizationCode);
     }
@@ -28,8 +28,8 @@ function ConnectPage() {
     }
     try {
       const requestBody = new URLSearchParams({ code: authorizationCode });
-      console.log("Request body:", requestBody.toString()); // Add this line
-      const res = await fetch("http://localhost:3000/get-token", {
+      console.log("Request body:", requestBody.toString());
+      const res = await fetch("http://localhost:3000/api/auth/get-token", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
