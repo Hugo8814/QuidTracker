@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 
+
 // dotenv.config();
 
 function ConnectPage() {
@@ -19,6 +20,8 @@ function ConnectPage() {
       getAccessToken(authorizationCode);
     }
   }, [authorizationCode]);
+
+
 
   async function getAccessToken(authorizationCode) {
     console.log("Authorization code:", authorizationCode);
@@ -46,6 +49,7 @@ function ConnectPage() {
       console.error(`error fetching access token:`, error);
     }
   }
+  
 
   return (
     <div className="shadow-xl flex justify-center items-center p-5 h-screen bg-[#919190] max-1100:flex-col max-1100:p-0">

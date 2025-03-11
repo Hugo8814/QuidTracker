@@ -1,6 +1,7 @@
 const express = require("express");
-const { getUserData } = require("../services/trueLayerService.cjs"); // Import service function
+const {getUserAccounts, getUserBalances} = require("../services/trueLayerService.cjs");
 const router = express.Router();
+
 
 router.post("/get-user-data", async (req, res) => {
   const accessToken = req.headers.authorization.split(" ")[1];
@@ -10,7 +11,7 @@ router.post("/get-user-data", async (req, res) => {
   }
 
   try {
-    const data = await getUserData(accessToken);
+    const data = await getUserAccounts(accessToken);
     res.json(data);
   } catch (error) {
     console.error("Error fetching user data:", error);
@@ -18,4 +19,29 @@ router.post("/get-user-data", async (req, res) => {
   }
 });
 
+// router.get('/all-data', async (req, res) => {
+//   try {
+//     const accountData = await Account.find().exec();
+//     const balanceData = await Balance.find().exec();
+//     const transactionData = await Transaction.find().exec();
+//     const userData = await User.find().exec();
+
+//     const allData = [...accountData, ...balanceData, ...transactionData, ...userData];
+
+//     // Add pending type as needed
+//     allData.forEach((item) => {
+//       if (item.type === 'pending') {
+//         item.pending = true;
+//       }
+//     });
+
+//     res.json(allData);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: 'Failed to fetch all data' });
+//   }
+// });
+
 module.exports = router;
+
+
