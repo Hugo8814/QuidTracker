@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const BalanceSchema = new Schema({
-  userID: { type: Schema.Types.ObjectId, ref: "User", required: true },
+  accountId: { type: String, required: true },
   type: { type: String, enum: ["card", "account"] },
   currency: String,
   available: Number,
