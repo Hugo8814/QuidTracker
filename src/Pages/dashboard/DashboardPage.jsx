@@ -27,12 +27,13 @@ function DashboardPage() {
       console.error(error);
     }
   }
-  useEffect(() => {
-    getUserData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   getUserData();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
   return (
     <div>
+      <button onClick={() => getUserData()}>get user data</button>
       {userData ? (
         <div>
           <h1>User Data</h1>

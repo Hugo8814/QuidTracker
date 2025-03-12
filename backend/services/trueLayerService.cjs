@@ -27,8 +27,6 @@ async function getUserAccounts(accessToken) {
       account.update_timestamp = new Date(account.update_timestamp);
     });
 
-    
-
     accounts.forEach((account) => {
       const accountDoc = new Account(account);
       accountDoc.save();
@@ -60,9 +58,12 @@ async function getUserAccounts(accessToken) {
     });
 
    
-    console.log("worked");
+    const accountIds = {
+      accountIds: accountsData.results.map((account) => account.account_id),
+      cardIds: cardsData.results.map((card) => card.account_id),
+    };
 
-    return accountsData.results.map((account) => account.account_id);
+    return accountIds;
   } catch (error) {
     console.error(error);
     throw error;
