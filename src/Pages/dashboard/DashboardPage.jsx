@@ -5,10 +5,10 @@ function DashboardPage() {
   // eslint-disable-next-line no-unused-vars
   const [userData, setUserData] = useState(null);
   console.log("Access token:", accessToken);
-  async function getUserData() {
+  async function storeUserData() {
     try {
       const response = await fetch(
-        "http://localhost:3000/api/truelayer/get-user-data",
+        "http://localhost:3000/api/truelayer/store-user-data",
         {
           method: "POST",
           headers: {
@@ -33,7 +33,7 @@ function DashboardPage() {
   // }, []);
   return (
     <div>
-      <button onClick={() => getUserData()}>get user data</button>
+      <button onClick={() => storeUserData()}>store user data</button>
       {userData ? (
         <div>
           <h1>User Data</h1>

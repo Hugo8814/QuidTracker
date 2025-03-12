@@ -1,9 +1,11 @@
 const express = require("express");
-const {getUserAccounts, getUserBalances} = require("../services/trueLayerService.cjs");
+const {
+  getUserAccounts,
+  getUserBalances,
+} = require("../services/trueLayerService.cjs");
 const router = express.Router();
 
-
-router.post("/get-user-data", async (req, res) => {
+router.get("/store-user-data", async (req, res) => {
   const accessToken = req.headers.authorization.split(" ")[1];
 
   if (!accessToken) {
@@ -12,6 +14,7 @@ router.post("/get-user-data", async (req, res) => {
 
   try {
     const data = await getUserAccounts(accessToken);
+    const balances = await getUserBalances(data, accessToken); // wont this call the balacnes
     res.json(data);
   } catch (error) {
     console.error("Error fetching user data:", error);
@@ -43,5 +46,3 @@ router.post("/get-user-data", async (req, res) => {
 // });
 
 module.exports = router;
-
-
