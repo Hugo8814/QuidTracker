@@ -1,19 +1,18 @@
 const fetch = require("node-fetch");
 const { Card, Account } = require("../models/Account.cjs");
 const Balance = require("../models/Balance.cjs");
+const Transaction = require("../models/Transaction.cjs");
 
+const URL = "api.truelayer-sandbox.com";
 async function getUserAccounts(accessToken) {
   try {
-    const accountsResponse = await fetch(
-      "https://api.truelayer-sandbox.com/data/v1/accounts",
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const accountsResponse = await fetch(`https://${URL}/data/v1/accounts`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
 
     if (!accountsResponse.ok) {
       throw new Error(
@@ -33,16 +32,13 @@ async function getUserAccounts(accessToken) {
       accountDoc.save();
     });
 
-    const cardsResponse = await fetch(
-      "https://api.truelayer-sandbox.com/data/v1/cards",
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    const cardsResponse = await fetch(`https://${URL}/data/v1/cards`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        "Content-Type": "application/json",
+      },
+    });
 
     if (!cardsResponse.ok) {
       throw new Error(
@@ -104,7 +100,7 @@ async function getUserBalances(Ids, accessToken) {
 
   for (const cardId of cardIds) {
     const balanceResponse = await fetch(
-      `https://api.truelayer-sandbox.com/data/v1/cards/${cardId}/balance`,
+      `https://${URL}/data/v1/cards/${cardId}/balance`,
       {
         method: "GET",
         headers: {
@@ -137,12 +133,61 @@ async function getUserBalances(Ids, accessToken) {
   }
   return "Balances stored successfully";
 }
-module.exports = { getUserAccounts, getUserBalances };
 
-
-async function getUserTransactions(accessToken) {
+async function getUserTransactions(Ids, accessToken) {
+  const { accountIds, cardIds } = Ids;
   try {
+    for (const accountId of accountIds) {
+      const accountTransactionsResponse = await fetch(
+        "https://api.truelayer-sandbox.com/data/v1/accounts/${accountId}/transactions",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-  }catch(error){
+      const accountTransactionsData = await accountTransactionsResponse.json();
+      if (
+        accountTransactionsData.results &&
+        accountTransactionsData.results.length > 0
+      ) {
+        accountTransactionsData.results.forEach((transaction) => {
+          const transactionDoc = new Transaction();
+          transactionDoc.save();
+        });
+      }
+    }
+
+    for (const cardId of cardIds) {
+      const cardTransactionsResponse = await fetch(
+        `https://${URL}/data/v1/cards/${cardId}/transactions`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const cardTransactionsData = await cardTransactionsResponse.json();
+      if (
+        cardTransactionsData.results &&
+        cardTransactionsData.results.length > 0
+      ) {
+        cardTransactionsData.results.forEach((transaction) => {
+          const transactionDoc = new Transaction();
+          transactionDoc.save();
+        });
+      }
+    }
+  } catch (error) {
     console.error(error);
+    throw error;
   }
+}
+
+module.exports = { getUserAccounts, getUserBalances, getUserTransactions };

@@ -15,7 +15,8 @@ router.get("/store-user-data", async (req, res) => {
   try {
     const data = await getUserAccounts(accessToken);
     const balances = await getUserBalances(data, accessToken);
-    console.log("Balances Stored:", balances);
+   // const transactions = await getUserTransactions(data, accessToken);
+    console.log("worked");
     res.json(data);
   } catch (error) {
     console.error("Error fetching user data:", error);
