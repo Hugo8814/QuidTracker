@@ -6,7 +6,7 @@ const morgan = require("morgan");
 const authRouter = require("./routes/authRoutes.cjs");
 const mongoose = require("mongoose");
 
-dotenv.config(); // Load environment variables from .env file
+dotenv.config(); // Load environment variables from .env fil
 
 const app = express();
 
