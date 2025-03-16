@@ -1,10 +1,13 @@
 const express = require("express");
 const {
+  getUserInfo,
   getUserAccounts,
   getUserBalances,
   getUserTransactions,
   getUserDirectDebits,
+  getUserStandingOders
 } = require("../services/trueLayerService.cjs");
+
 const router = express.Router();
 
 router.get("/store-user-data", async (req, res) => {
@@ -15,13 +18,16 @@ router.get("/store-user-data", async (req, res) => {
   }
 
   try {
-    const data = await getUserAccounts(accessToken);
-    const balances = await getUserBalances(data, accessToken);
-    //const transactions = await getUserTransactions(data, accessToken);
-    //const directDebit = await getUserDirectDebits(data, accessToken);
+    const userInfo = await getUserInfo(accessToken);
+   // const accounts = await getUserAccounts(accessToken);
+   // const balances = await getUserBalances(accounts, accessToken);
+   // const transactions = await getUserTransactions(accounts, accessToken);
+   // const directDebit = await getUserDirectDebits(accounts, accessToken);
+   // const standingOrders = await getUserStandingOders(accounts, accessToken);
 
     console.log("worked");
-    res.json("worked hugo your a hero");
+    res.json("success");
+     //res.json(`success: ${balances},\n ${transactions},\n ${directDebit}, ${standingOrders}`);
   } catch (error) {
     console.error("Error fetching user data:", error);
     res.status(500).json({ error: "Failed to fetch user data" });
