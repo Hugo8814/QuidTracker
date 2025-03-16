@@ -1,14 +1,12 @@
-// import dotenv from "dotenv";
-
 import { useEffect } from "react";
 
-
-// dotenv.config();
+console.log(import.meta.env);
 
 function ConnectPage() {
-  // const CLIENT_ID = "sandbox-quidtracker-48cd14";
-  // const REDIRECT_URI = "http://localhost:5173/connect"; // Update to match your frontend URL
-  const AUTH_URL = `https://auth.truelayer-sandbox.com/?response_type=code&client_id=sandbox-quidtracker-48cd14&scope=info%20accounts%20balance%20cards%20transactions%20direct_debits%20standing_orders%20offline_access&redirect_uri=http://localhost:5173/connect&providers=uk-cs-mock%20uk-ob-all%20uk-oauth-all`;
+  const AUTH_URL =
+    import.meta.env.MODE === "production"
+      ? `https://auth.truelayer.com/?response_type=code&client_id=${import.meta.env.CLIENT_ID_PROD}&scope=info%20accounts%20balance%20cards%20transactions%20direct_debits%20standing_orders%20offline_access&redirect_uri=${import.meta.env.REDIRECT_URI}&providers=uk-cs-mock%20uk-ob-all%20uk-oauth-all`
+      : `https://auth.truelayer-sandbox.com/?response_type=code&client_id=${import.meta.env.CLIENT_ID_SANDBOX}&scope=info%20accounts%20balance%20cards%20transactions%20direct_debits%20standing_orders%20offline_access&redirect_uri=${import.meta.env.REDIRECT_URI}&providers=uk-cs-mock%20uk-ob-all%20uk-oauth-all`;
 
   const urlParams = new URLSearchParams(window.location.search);
   const authorizationCode = urlParams.get("code");
@@ -20,8 +18,6 @@ function ConnectPage() {
       getAccessToken(authorizationCode);
     }
   }, [authorizationCode]);
-
-
 
   async function getAccessToken(authorizationCode) {
     console.log("Authorization code:", authorizationCode);
@@ -49,7 +45,6 @@ function ConnectPage() {
       console.error(`error fetching access token:`, error);
     }
   }
-  
 
   return (
     <div className="shadow-xl flex justify-center items-center p-5 h-screen bg-[#919190] max-1100:flex-col max-1100:p-0">

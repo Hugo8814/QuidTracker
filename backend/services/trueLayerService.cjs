@@ -5,7 +5,10 @@ const Transaction = require("../models/Transaction.cjs");
 const DirectDebit = require("../models/DirectDebit.cjs");
 const StandingOrder = require("../models/StandingOrder.cjs");
 const User = require("../models/User.cjs");
-const URL = "api.truelayer-sandbox.com";
+const URL =
+  process.env.NODE_ENV === "production"
+    ? process.env.API_URL_PROD
+    : process.env.API_URL_SANDBOX;
 
 // Utility function to handle fetch requests
 async function fetchData(url, accessToken) {

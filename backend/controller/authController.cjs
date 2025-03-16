@@ -6,6 +6,10 @@ dotenv.config();
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = "http://localhost:5173/connect";
+const URL =
+  process.env.NODE_ENV === "production"
+    ? process.env.AUTH_URL_PROD
+    : process.env.AUTH_URL_SANDBOX;
 
 exports.getToken = async (req, res) => {
   console.log("Request body:", req.body);
@@ -15,7 +19,7 @@ exports.getToken = async (req, res) => {
   }
   try {
     const tokenResponse = await fetch(
-      "https://auth.truelayer-sandbox.com/connect/token",
+      `https://${URL}/connect/token`,
       {
         method: "POST",
         headers: {
