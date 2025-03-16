@@ -2,6 +2,8 @@ const fetch = require("node-fetch");
 const { Card, Account } = require("../models/Account.cjs");
 const Balance = require("../models/Balance.cjs");
 const Transaction = require("../models/Transaction.cjs");
+const mongoose = require("mongoose");
+const DirectDebit = require("../models/DirectDebit.cjs");
 
 const URL = "api.truelayer-sandbox.com";
 async function getUserAccounts(accessToken) {
@@ -82,15 +84,12 @@ async function getUserBalances(Ids, accessToken) {
     );
 
     const balanceData = await balanceResponse.json();
+    console.log(balanceData);
     if (balanceData.results && balanceData.results.length > 0) {
       const balance = new Balance({
         accountId,
         type: "account",
-        currency: balanceData.results[0].currency,
-        available: balanceData.results[0].available,
-        current: balanceData.results[0].current,
-        overdraft: balanceData.results[0].overdraft,
-        updateTimestamp: balanceData.results[0].update_timestamp,
+        ...balanceData.results[0]
       });
       await balance.save();
     } else {
@@ -115,16 +114,7 @@ async function getUserBalances(Ids, accessToken) {
       const balance = new Balance({
         accountId: cardId,
         type: "card",
-        currency: balanceData.results[0].currency,
-        available: balanceData.results[0].available,
-        current: balanceData.results[0].current,
-        overdraft: balanceData.results[0].overdraft,
-        updateTimestamp: balanceData.results[0].update_timestamp,
-        credit_limit: balanceData.results[0].credit_limit,
-        last_statement_date: balanceData.results[0].last_statement_date,
-        last_statement_balance: balanceData.results[0].last_statement_balance,
-        payment_due: balanceData.results[0].payment_due,
-        payment_due_date: balanceData.results[0].payment_due_date,
+        ...balanceData.results
       });
       await balance.save();
     } else {
@@ -155,7 +145,13 @@ async function getUserTransactions(Ids, accessToken) {
         accountTransactionsData.results.length > 0
       ) {
         accountTransactionsData.results.forEach((transaction) => {
-          const transactionDoc = new Transaction();
+          const transactionDoc = new Transaction({
+            // userID: transaction.user_id, // assuming user_id is the correct field
+            ...transaction,
+
+            account_id: accountId.toString(), // assuming account_id is the correct field
+            pending: false,
+          });
           transactionDoc.save();
         });
       }
@@ -179,7 +175,71 @@ async function getUserTransactions(Ids, accessToken) {
         cardTransactionsData.results.length > 0
       ) {
         cardTransactionsData.results.forEach((transaction) => {
-          const transactionDoc = new Transaction();
+          const transactionDoc = new Transaction({
+            ...transaction,
+            card_id: cardId.toString(), // Convert cardId to ObjectId
+            pending: false,
+          });
+
+          transactionDoc.save();
+        });
+      }
+    }
+    //////////// Pending transactions
+    for (const accountId of accountIds) {
+      const pendingAccountTransactionsResponse = await fetch(
+        `https://api.truelayer-sandbox.com/data/v1/accounts/${accountId}/transactions/pending`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const pendingAccountTransactionsData =
+        await pendingAccountTransactionsResponse.json();
+      if (
+        pendingAccountTransactionsData.results &&
+        pendingAccountTransactionsData.results.length > 0
+      ) {
+        pendingAccountTransactionsData.results.forEach((transaction) => {
+          const transactionDoc = new Transaction({
+            ...transaction,
+            account_id: accountId.toString(),
+            pending: true,
+          });
+          transactionDoc.save();
+        });
+      }
+    }
+
+    for (const cardId of cardIds) {
+      const pendingCardTransactionsResponse = await fetch(
+        `https://${URL}/data/v1/cards/${cardId}/transactions/pending`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const pendingCardTransactionsData =
+        await pendingCardTransactionsResponse.json();
+      console.log(pendingCardTransactionsData);
+      if (
+        pendingCardTransactionsData.results &&
+        pendingCardTransactionsData.results.length > 0
+      ) {
+        pendingCardTransactionsData.results.forEach((transaction) => {
+          const transactionDoc = new Transaction({
+            ...transaction,
+            card_id: cardId.toString(),
+            pending: true,
+          });
           transactionDoc.save();
         });
       }
@@ -190,4 +250,41 @@ async function getUserTransactions(Ids, accessToken) {
   }
 }
 
-module.exports = { getUserAccounts, getUserBalances, getUserTransactions };
+async function getUserDirectDebits(Ids, accessToken) {
+  const { accountIds, cardIds } = Ids;
+  try {
+    for (const accountId of accountIds) {
+      const directDebitResponse = await fetch(
+        `https://${URL}/data/v1/accounts/${accountId}/direct_debits`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const directDebitData = await directDebitResponse.json();
+      const directDebits = directDebitData.results;
+      if (directDebits && directDebits.length > 0) {
+        directDebits.forEach((directDebit) => {
+          const directDebitDoc = new DirectDebit({
+            ...directDebit,
+            account_id: accountId,
+          });
+          directDebitDoc.save();
+        });
+      }
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+module.exports = {
+  getUserAccounts,
+  getUserBalances,
+  getUserTransactions,
+  getUserDirectDebits,
+};
