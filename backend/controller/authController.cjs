@@ -1,15 +1,21 @@
 const fetch = require("node-fetch");
 const dotenv = require("dotenv");
 
-dotenv.config();
+if (process.env.NODE_ENV === "production") {
+  dotenv.config({ path: ".env.production" });
+} else {
+  dotenv.config();
+}
 
 const CLIENT_ID = process.env.CLIENT_ID;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const REDIRECT_URI = "http://localhost:5173/connect";
-const URL =
-  process.env.NODE_ENV === "production"
-    ? process.env.AUTH_URL_PROD
-    : process.env.AUTH_URL_SANDBOX;
+
+if (process.env.NODE_ENV === "production") {
+  console.log(process.env.AUTH_URL, process.env.CLIENT_ID);
+}
+
+const URL = process.env.AUTH_URL;
 
 exports.getToken = async (req, res) => {
   console.log("Request body:", req.body);
@@ -19,7 +25,7 @@ exports.getToken = async (req, res) => {
   }
   try {
     const tokenResponse = await fetch(
-      `https://${URL}/connect/token`,
+      `https://api.truelayer.com/connect/token`,
       {
         method: "POST",
         headers: {
