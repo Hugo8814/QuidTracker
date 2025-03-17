@@ -59,6 +59,7 @@ async function getUserInfo(accessToken, userId) {
     console.error(error);
     throw error;
   }
+  return "user info stored successfully";
 }
 async function getUserAccounts(accessToken, userId) {
   try {
@@ -141,7 +142,7 @@ async function getUserTransactions(Ids, accessToken, userId) {
       `https://api.truelayer-sandbox.com/data/v1/accounts/${accountId}/transactions`,
       accessToken
     );
-    const limitedTransactions = accountTransactionsData.results.slice(0, 500); // Limit to 200 transactions
+    const limitedTransactions = accountTransactionsData.results.slice(0, 200); // Limit to 200 transactions
     await processApiResponse(
       { results: limitedTransactions },
       Transaction,

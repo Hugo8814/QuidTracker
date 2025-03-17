@@ -1,6 +1,7 @@
 const fetch = require("node-fetch");
 const dotenv = require("dotenv");
-const base64 = require("base64-js");
+const AuthUser = require("../models/AuthUser.cjs");
+const mongoose = require("mongoose");
 
 if (process.env.NODE_ENV === "production") {
   dotenv.config({ path: ".env.production" });
@@ -14,7 +15,6 @@ const CLIENT_ID_SANDBOX = "sandbox-quidtracker-48cd14";
 const CLIENT_SECRET = "b2b18e2f-0b66-4922-a5b3-ba4523a90a60";
 const REDIRECT_URI = "http://localhost:5173/connect";
 
-const AuthUser = require("../models/AuthUser.cjs");
 const bcrypt = require("bcryptjs");
 
 const register = async (req, res) => {
@@ -89,5 +89,12 @@ const getToken = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch access token" });
   }
 };
-
-module.exports = { register, login, authenticate, getToken };
+const storeUserToken = async (userId, accessToken) => {
+  const authUser = await AuthUser.findOneAndUpdate(
+    { _id: new mongoose.Types.ObjectId(userId) },
+    { $set: { token: accessToken } },
+    { new: true }
+  );
+  return "user info stored successfully";
+};
+module.exports = { register, login, authenticate, getToken, storeUserToken };

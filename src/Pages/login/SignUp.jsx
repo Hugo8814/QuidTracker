@@ -26,7 +26,7 @@ function SignUp() {
           body: JSON.stringify({ email: Email, password: password }),
         }
       );
-      console.log(response);
+
       const data = await response.json();
       if (response.ok) {
         const userId = data.user._id; // Get the user ID from the response

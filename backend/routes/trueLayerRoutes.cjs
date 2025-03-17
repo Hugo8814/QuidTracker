@@ -1,5 +1,5 @@
 const express = require("express");
-const AuthUser = require("../models/AuthUser.cjs");
+const { storeUserToken } = require("../controller/authController.cjs");
 const {
   getUserInfo,
   getUserAccounts,
@@ -8,6 +8,7 @@ const {
   getUserDirectDebits,
   getUserStandingOders,
 } = require("../services/trueLayerService.cjs");
+
 const router = express.Router();
 
 router.post("/store-user-data", async (req, res) => {
@@ -21,24 +22,33 @@ router.post("/store-user-data", async (req, res) => {
 
   try {
     const userInfo = await getUserInfo(accessToken, userId);
-     const accounts = await getUserAccounts(accessToken , userId);
-     const balances = await getUserBalances(accounts, accessToken, userId);
-     const transactions = await getUserTransactions(accounts, accessToken, userId);
-    const directDebit = await getUserDirectDebits(accounts, accessToken, userId);
-     const standingOrders = await getUserStandingOders(accounts, accessToken, userId);
-
-    
+    const accounts = await getUserAccounts(accessToken, userId);
+    const balances = await getUserBalances(accounts, accessToken, userId);
+    const transactions = await getUserTransactions(
+      accounts,
+      accessToken,
+      userId
+    );
+    const directDebit = await getUserDirectDebits(
+      accounts,
+      accessToken,
+      userId
+    );
+    const standingOrders = await getUserStandingOders(
+      accounts,
+      accessToken,
+      userId
+    );
+    const authUser = await storeUserToken(userId, accessToken);
 
     res.json(
-      `success: ,\n ${userInfo},\n ${accounts},\n ${transactions},\n ${directDebit}, ${standingOrders} `
+      `success: ,\n ${userInfo},\n ${accounts},\n ${transactions},\n ${directDebit}, ${standingOrders} ,\n ${balances} ,\n ${authUser}`
     );
-    // res.json("success");
+    
   } catch (error) {
     console.error("Error fetching user data:", error);
     res.status(500).json({ error: "Failed to fetch user data" });
   }
 });
-
-
 
 module.exports = router;
