@@ -1,37 +1,42 @@
 import Logo from "../../imgs/Logo.svg";
 import google from "../../imgs/google.svg";
-
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import hero from "../../imgs/hero.png";
 import { Link } from "react-router-dom";
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  try {
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ Email, password }),
-    });
-
-    const data = await response.json();
-
-    // Inside handleSubmit after successful login:
-    if (response.ok) {
-      localStorage.setItem("token", data.token); // Store token in localStorage
-      dispatch(setAuthToken(data.token)); // Dispatch action to set token in Redux
-      navigate("/app/Overview"); // Redirect using useNavigate
-    } else {
-      setError(data.error); // Handle error from server
-    }
-  } catch (error) {
-    console.error("Error logging in:", error);
-    setError("An unexpected error occurred. Please try again.");
-  }
-};
 function LoginPage() {
+  const navigate = useNavigate();
+  const [Email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email: Email, password: password }),
+        }
+      );
+      console.log(response);
+      const data = await response.json();
+      if (response.ok) {
+        navigate("/app/Dashboard");
+      } else if (data.error) {
+        setError(data.error);
+      }
+      console.log(data);
+    } catch (error) {
+      console.error("Error registering:", error);
+    }
+  };
   return (
     <div className="shadow-xl flex items-center p-5 h-screen bg-[#ffffff] max-1100:flex-col max-1100:p-0  ">
       <div className="relative bg-[#0055ff]  h-full max-w-[560px] flex-1 overflow-hidden rounded-[12px] bg-grey-900 p-12  max-1100:hidden max-1100:p-0 flex flex-col  ">
@@ -87,7 +92,7 @@ function LoginPage() {
             className="bg-white p-12   rounded-xl  w-[45%] flex flex-col gap-6 max-1300:w-[60%] max-1100:w-[55%] max-1100:m-[10%]
         max-700:w-full max-700:m-[10%] max-380:m-[3%]  "
           >
-            {/* {error && <p className="text-red-500 text-sm mb-4">{error}</p>} */}
+            {error && <p className="text-red-500 text-xl mb-4">{error}</p>}
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div className="mb-4">
                 <label
@@ -99,8 +104,8 @@ function LoginPage() {
                 <input
                   type="text"
                   id="Email"
-                  // value={Email}
-                  // onChange={(e) => setEmail(e.target.value)}
+                  value={Email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="shadow appearance-none border rounded-xl w-full py-5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   required
                 />
@@ -115,8 +120,8 @@ function LoginPage() {
                 <input
                   type="password"
                   id="password"
-                  // value={password}
-                  // onChange={(e) => setPassword(e.target.value)}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="shadow appearance-none border rounded-xl w-full py-5 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   required
                 />

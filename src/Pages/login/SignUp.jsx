@@ -5,28 +5,19 @@ import hero from "../../imgs/hero.png";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-//     if (response.ok) {
-//       localStorage.setItem("token", data.token); // Store token in localStorage
-//       dispatch(setAuthToken(data.token)); // Dispatch action to set token in Redux
-//       navigate("/app/Overview"); // Redirect using useNavigate
-//     } else {
-//       setError(data.error); // Handle error from server
-//     }
-//   } catch (error) {
-//     console.error("Error registering:", error);
-//     setError("An unexpected error occurred. Please try again.");
-//   }
-// };
+import { useNavigate } from "react-router-dom";
 function SignUp() {
+  const navigate = useNavigate();
   const [Email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/auth/register`,
+        `${import.meta.env.VITE_API_URL}/api/auth/register`,
         {
           method: "POST",
           headers: {
@@ -35,17 +26,16 @@ function SignUp() {
           body: JSON.stringify({ email: Email, password: password }),
         }
       );
-
+      console.log(response);
       const data = await response.json();
       if (response.ok) {
-        setToken(data.token); // Store token in state
-        navigate("/app/Overview"); // Redirect using useNavigate
-      } else {
-        console.log("error"); //setError(data.error); // Handle error from server
+        navigate("/app/Dashboard");
+      } else if (data.error) {
+        setError(data.error);
       }
+      console.log(data);
     } catch (error) {
       console.error("Error registering:", error);
-      //setError("An unexpected error occurred. Please try again.");
     }
   };
   return (
@@ -99,7 +89,7 @@ function SignUp() {
             className="bg-white p-12   rounded-xl  w-[45%] flex flex-col gap-6 max-1300:w-[60%] max-1100:w-[55%] max-1100:m-[10%]
         max-700:w-full max-700:m-[10%] max-380:m-[3%]  "
           >
-            {/* {error && <p className="text-red-500 text-sm mb-4">{error}</p>} */}
+            {error && <p className="text-red-500 text-xl mb-4">{error}</p>}
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div className="mb-4">
                 <label

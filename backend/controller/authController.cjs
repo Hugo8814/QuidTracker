@@ -16,16 +16,39 @@ const AuthUser = require("../models/AuthUser.cjs");
 const bcrypt = require("bcryptjs");
 
 const register = async (req, res) => {
-  // Registration logic here
-  req.body.password = await bcrypt.hash(req.body.password, 10);
-  const authUser = new AuthUser(req.body);
-  authUser.save();
-  res.json({ message: "User registered successfully", user: authUser });
-
+  try {
+    const { email, password } = req.body;
+    const existingUser = await AuthUser.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: "Email already registered" });
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const authUser = new AuthUser({ email, password: hashedPassword });
+    await authUser.save();
+    res.json({ message: "User registered successfully", user: authUser });
+  } catch (error) {
+    console.error("Error registering user:", error);
+    res.status(500).json({ error: "Failed to register user" });
+  }
 };
-
 const login = async (req, res) => {
-  // Login logic here
+  try {
+    const { email, password } = req.body;
+    console.log("Email:", email);
+    console.log("Password:", password);
+    const user = await AuthUser.findOne({ email });
+    if (!user) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      return res.status(401).json({ error: "Invalid email or password" });
+    }
+    res.json("worked");
+  } catch (error) {
+    console.error("Error logging in user:", error);
+    res.status(500).json({ error: "Failed to log in user" });
+  }
 };
 
 const authenticate = async (req, res, next) => {
