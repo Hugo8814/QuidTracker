@@ -1,5 +1,6 @@
 const fetch = require("node-fetch");
 const dotenv = require("dotenv");
+const base64 = require("base64-js");
 
 if (process.env.NODE_ENV === "production") {
   dotenv.config({ path: ".env.production" });
@@ -7,15 +8,9 @@ if (process.env.NODE_ENV === "production") {
   dotenv.config();
 }
 
-const CLIENT_ID = process.env.CLIENT_ID;
-const CLIENT_SECRET = process.env.CLIENT_SECRET;
+const CLIENT_ID = "quidtracker-48cd14";
+const CLIENT_SECRET = "a8b948ed-a40b-4d72-a612-f84a75dab83a";
 const REDIRECT_URI = "http://localhost:5173/connect";
-
-if (process.env.NODE_ENV === "production") {
-  console.log(process.env.AUTH_URL, process.env.CLIENT_ID);
-}
-
-const URL = process.env.AUTH_URL;
 
 exports.getToken = async (req, res) => {
   console.log("Request body:", req.body);
@@ -25,16 +20,15 @@ exports.getToken = async (req, res) => {
   }
   try {
     const tokenResponse = await fetch(
-      `https://api.truelayer.com/connect/token`,
+      `https://auth.truelayer.com/connect/token`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Basic ${Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64")}`,
         },
         body: new URLSearchParams({
           grant_type: "authorization_code",
-          client_id: CLIENT_ID,
-          client_secret: CLIENT_SECRET,
           redirect_uri: REDIRECT_URI,
           code: code,
         }),
@@ -44,7 +38,7 @@ exports.getToken = async (req, res) => {
     if (!tokenResponse.ok) {
       throw new Error(JSON.stringify(tokenData));
     }
-    res.json(tokenData); // Send access token back to frontend
+    res.json(tokenData);
   } catch (error) {
     console.error("Error fetching access token:", error);
     res.status(500).json({ error: "Failed to fetch access token" });

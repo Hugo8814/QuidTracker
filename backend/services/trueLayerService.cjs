@@ -5,10 +5,9 @@ const Transaction = require("../models/Transaction.cjs");
 const DirectDebit = require("../models/DirectDebit.cjs");
 const StandingOrder = require("../models/StandingOrder.cjs");
 const User = require("../models/User.cjs");
-const URL =
-  process.env.NODE_ENV === "production"
-    ? process.env.API_URL_PROD
-    : process.env.API_URL_SANDBOX;
+const URL = "api.truelayer.com"
+console.log(URL)
+  
 
 // Utility function to handle fetch requests
 async function fetchData(url, accessToken) {
@@ -30,20 +29,23 @@ async function fetchData(url, accessToken) {
 // Function to process and save data from API response
 async function processApiResponse(data, model, additionalFields = {}) {
   if (data.results && data.results.length > 0) {
-    await Promise.all(
-      data.results.map(async (item) => {
-        const doc = new model({
-          ...item,
-          ...additionalFields,
-        });
-        await doc.save();
-      })
-    );
+    try {
+      await Promise.all(
+        data.results.map(async (item) => {
+          const doc = new model({
+            ...item,
+            ...additionalFields,
+          });
+          await doc.save();
+        })
+      );
+    } catch (error) {
+      console.error("Error saving data to database:", error);
+    }
   } else {
     console.log("No data found for the requested resource");
   }
 }
-
 // Fetch user accounts and cards
 
 async function getUserInfo(accessToken) {
