@@ -12,7 +12,27 @@ const CLIENT_ID = "quidtracker-48cd14";
 const CLIENT_SECRET = "a8b948ed-a40b-4d72-a612-f84a75dab83a";
 const REDIRECT_URI = "http://localhost:5173/connect";
 
-exports.getToken = async (req, res) => {
+const AuthUser = require("../models/AuthUser.cjs");
+const bcrypt = require("bcryptjs");
+
+const register = async (req, res) => {
+  // Registration logic here
+  req.body.password = await bcrypt.hash(req.body.password, 10);
+  const authUser = new AuthUser(req.body);
+  authUser.save();
+  res.json({ message: "User registered successfully", user: authUser });
+
+};
+
+const login = async (req, res) => {
+  // Login logic here
+};
+
+const authenticate = async (req, res, next) => {
+  // Authentication middleware logic here
+};
+
+const getToken = async (req, res) => {
   console.log("Request body:", req.body);
   const { code } = req.body;
   if (!code) {
@@ -44,3 +64,5 @@ exports.getToken = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch access token" });
   }
 };
+
+module.exports = { register, login, authenticate, getToken };
