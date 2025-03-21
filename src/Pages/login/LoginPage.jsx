@@ -1,4 +1,5 @@
 import Logo from "../../imgs/Logo.svg";
+import google from "../../imgs/google.svg";
 
 import hero from "../../imgs/hero.png";
 import { Link } from "react-router-dom";
@@ -137,6 +138,17 @@ function LoginPage() {
                 Try out a Demo Account
               </button>
             </form>
+
+            <div className="flex items-center w-full justify-center">
+              <div className="w-full h-[1px] bg-gray-200"></div>
+              <p className="text-gray-400 text-xl px-3">OR</p>
+              <div className="w-full h-[1px] bg-gray-200"></div>
+            </div>
+            <div className="flex items-center w-full ">
+              <div></div>
+              <div></div>
+            </div>
+            
             <div>
               <p className="text-gray-600 text-xl text-center p-3">
                 Need to reset your password?{" "}
