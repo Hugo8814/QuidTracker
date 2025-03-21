@@ -63,7 +63,7 @@ function LoginPage() {
           </h2>
           <p className="text-2xl font-normal">
             Quid Tracker puts you in control of your spending. Track
-            transactions, set budgets, and track subscriptions easily.
+            transactions, set budgets, and track subscriptions easily
           </p>
         </div>
       </div>
@@ -148,7 +148,7 @@ function LoginPage() {
               <div></div>
               <div></div>
             </div>
-            
+
             <div>
               <p className="text-gray-600 text-xl text-center p-3">
                 Need to reset your password?{" "}
