@@ -63,7 +63,7 @@ function LoginPage() {
           </h2>
           <p className="text-2xl font-normal">
             Quid Tracker puts you in control of your spending. Track
-            transactions, set budgets, and track subscriptions easily
+            transactions, set budgets, and track subscriptions easilydocument.
           </p>
         </div>
       </div>
