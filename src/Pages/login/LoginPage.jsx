@@ -144,9 +144,15 @@ function LoginPage() {
               <p className="text-gray-400 text-xl px-3">OR</p>
               <div className="w-full h-[1px] bg-gray-200"></div>
             </div>
-            <div className="flex items-center w-full ">
-              <div></div>
-              <div></div>
+            <div className="flex items-center w-full  border-2 border-gray-200 rounded-[5rem] p-[1rem] justify-center">
+              <img
+                src={google}
+                className="w-[3rem] ml-[0.5rem] "
+                alt="google logo"
+              />
+              <div className="text-black text-[1.7rem] font-semibold m-auto">
+                Log in with Google
+              </div>
             </div>
 
             <div>
