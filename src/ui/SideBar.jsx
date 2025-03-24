@@ -4,6 +4,7 @@ import transactions from "../imgs/transactions.svg";
 import pieChart from "../imgs/pieChart.svg";
 import receipt from "../imgs/receipt.svg";
 import settings from "../imgs/setting.svg";
+import home from "../imgs/home.svg";
 
 function SideBar() {
   return (
@@ -15,11 +16,11 @@ function SideBar() {
       </div>
 
       {/* Navigation Links */}
-      <NavBtn logo={transactions} to="Dashboard">
+      <NavBtn logo={home} to="Dashboard">
         Overview
       </NavBtn>
 
-      <NavBtn logo={transactions} to="Transactions">
+      <NavBtn logo={transactions}  to="Transactions">
         Transactions
       </NavBtn>
 
