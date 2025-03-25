@@ -62,7 +62,7 @@ function DashboardPage() {
           <div className="bg-white  rounded-full w-[4rem] h-full">
             <img src={bankImg} className="w-full h-full" alt="bank logo" />
           </div>
-          <p className="text-[2.5rem] text-[#0055ff] font-semibold ">£546</p>
+          <p className="text-[2.5rem] text-[#0055ff] font-semibold ">£576</p>
         </div>
       </div>
     </div>
