@@ -8,8 +8,10 @@ if (process.env.NODE_ENV === "production") {
   dotenv.config();
 }
 
-const CLIENT_ID = "quidtracker-48cd14";
-const CLIENT_SECRET = "a8b948ed-a40b-4d72-a612-f84a75dab83a";
+//const CLIENT_ID = "quidtracker-48cd14";
+//const CLIENT_SECRET = "a8b948ed-a40b-4d72-a612-f84a75dab83a";
+const CLIENT_ID_SANDBOX = "sandbox-quidtracker-48cd14";
+const CLIENT_SECRET = "b2b18e2f-0b66-4922-a5b3-ba4523a90a60";
 const REDIRECT_URI = "http://localhost:5173/connect";
 
 const AuthUser = require("../models/AuthUser.cjs");
@@ -63,12 +65,12 @@ const getToken = async (req, res) => {
   }
   try {
     const tokenResponse = await fetch(
-      `https://auth.truelayer.com/connect/token`,
+      `https://auth.truelayer-sandbox.com/connect/token`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: `Basic ${Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64")}`,
+          Authorization: `Basic ${Buffer.from(`${CLIENT_ID_SANDBOX}:${CLIENT_SECRET}`).toString("base64")}`,
         },
         body: new URLSearchParams({
           grant_type: "authorization_code",

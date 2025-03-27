@@ -29,11 +29,15 @@ function SignUp() {
       console.log(response);
       const data = await response.json();
       if (response.ok) {
-        navigate("/app/Dashboard");
+        const userId = data.user._id; // Get the user ID from the response
+        console.log(data.user._id);
+
+        localStorage.setItem("user_Id", userId); // Store the user ID in local storage
+        navigate("/connect");
+        console.log(data);
       } else if (data.error) {
         setError(data.error);
       }
-      console.log(data);
     } catch (error) {
       console.error("Error registering:", error);
     }

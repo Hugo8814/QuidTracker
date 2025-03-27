@@ -5,9 +5,8 @@ const Transaction = require("../models/Transaction.cjs");
 const DirectDebit = require("../models/DirectDebit.cjs");
 const StandingOrder = require("../models/StandingOrder.cjs");
 const User = require("../models/User.cjs");
-const URL = "api.truelayer.com"
-console.log(URL)
-  
+const URL = "api.truelayer-sandbox.com";
+console.log(URL);
 
 // Utility function to handle fetch requests
 async function fetchData(url, accessToken) {
@@ -27,12 +26,13 @@ async function fetchData(url, accessToken) {
 }
 
 // Function to process and save data from API response
-async function processApiResponse(data, model, additionalFields = {}) {
+async function processApiResponse(data, model, additionalFields = {}, userId) {
   if (data.results && data.results.length > 0) {
     try {
       await Promise.all(
         data.results.map(async (item) => {
           const doc = new model({
+            userId,
             ...item,
             ...additionalFields,
           });
@@ -48,13 +48,14 @@ async function processApiResponse(data, model, additionalFields = {}) {
 }
 // Fetch user accounts and cards
 
-async function getUserInfo(accessToken) {
+async function getUserInfo(accessToken, userId) {
   try {
     const userInfo = await fetchData(
       `https://${URL}/data/v1/info`,
       accessToken
     );
-    processApiResponse(userInfo, User);
+    processApiResponse(userInfo, User, { userId }, userId);
+    
   } catch (error) {
     console.error(error);
     throw error;
