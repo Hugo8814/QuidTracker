@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
-const { Account } = require("./Account.cjs");
+const Schema = mongoose.Schema;
 
 
-const StandingOrder = new mongoose.Schema({
-
+const StandingOrder = new Schema({
+  userId: { type: String, required: true },
     frequency: String,
     status: String,
     timestamp: Date,

@@ -54,14 +54,13 @@ async function getUserInfo(accessToken, userId) {
       `https://${URL}/data/v1/info`,
       accessToken
     );
-    processApiResponse(userInfo, User, { userId }, userId);
-    
+    await processApiResponse(userInfo, User, { userId }, userId);
   } catch (error) {
     console.error(error);
     throw error;
   }
 }
-async function getUserAccounts(accessToken) {
+async function getUserAccounts(accessToken, userId) {
   try {
     const accountsData = await fetchData(
       `https://${URL}/data/v1/accounts`,
@@ -70,13 +69,13 @@ async function getUserAccounts(accessToken) {
     accountsData.results.forEach((account) => {
       account.update_timestamp = new Date(account.update_timestamp);
     });
-    await processApiResponse(accountsData, Account);
+    await processApiResponse(accountsData, Account, { userId }, userId);
 
     const cardsData = await fetchData(
       `https://${URL}/data/v1/cards`,
       accessToken
     );
-    await processApiResponse(cardsData, Card);
+    await processApiResponse(cardsData, Card, { userId }, userId);
 
     const accountIds = {
       accountIds: accountsData.results.map((account) => account.account_id),
@@ -91,7 +90,7 @@ async function getUserAccounts(accessToken) {
 }
 
 // Fetch and save user balances
-async function getUserBalances(Ids, accessToken) {
+async function getUserBalances(Ids, accessToken, userId) {
   const { accountIds, cardIds } = Ids;
 
   const accountBalancePromises = accountIds.map(async (accountId) => {
@@ -99,10 +98,16 @@ async function getUserBalances(Ids, accessToken) {
       `https://api.truelayer-sandbox.com/data/v1/accounts/${accountId}/balance`,
       accessToken
     );
-    await processApiResponse(balanceData, Balance, {
-      accountId,
-      type: "account",
-    });
+    await processApiResponse(
+      balanceData,
+      Balance,
+      {
+        accountId,
+        type: "account",
+        userId,
+      },
+      userId
+    );
   });
 
   const cardBalancePromises = cardIds.map(async (cardId) => {
@@ -110,10 +115,16 @@ async function getUserBalances(Ids, accessToken) {
       `https://${URL}/data/v1/cards/${cardId}/balance`,
       accessToken
     );
-    await processApiResponse(balanceData, Balance, {
-      accountId: cardId,
-      type: "card",
-    });
+    await processApiResponse(
+      balanceData,
+      Balance,
+      {
+        accountId: cardId,
+        type: "card",
+        userId,
+      },
+      userId
+    );
   });
 
   await Promise.all([...accountBalancePromises, ...cardBalancePromises]);
@@ -122,7 +133,7 @@ async function getUserBalances(Ids, accessToken) {
 }
 
 // Fetch and save user transactions
-async function getUserTransactions(Ids, accessToken) {
+async function getUserTransactions(Ids, accessToken, userId) {
   const { accountIds, cardIds } = Ids;
 
   const accountTransactionPromises = accountIds.map(async (accountId) => {
@@ -130,21 +141,33 @@ async function getUserTransactions(Ids, accessToken) {
       `https://api.truelayer-sandbox.com/data/v1/accounts/${accountId}/transactions`,
       accessToken
     );
-    const limitedTransactions = accountTransactionsData.results.slice(0, 200); // Limit to 200 transactions
-    await processApiResponse({ results: limitedTransactions }, Transaction, {
-      account_id: accountId.toString(),
-      pending: false,
-    });
+    const limitedTransactions = accountTransactionsData.results.slice(0, 500); // Limit to 200 transactions
+    await processApiResponse(
+      { results: limitedTransactions },
+      Transaction,
+      {
+        account_id: accountId.toString(),
+        pending: false,
+        userId,
+      },
+      userId
+    );
   });
   const cardTransactionPromises = cardIds.map(async (cardId) => {
     const cardTransactionsData = await fetchData(
       `https://${URL}/data/v1/cards/${cardId}/transactions`,
       accessToken
     );
-    await processApiResponse(cardTransactionsData, Transaction, {
-      card_id: cardId.toString(),
-      pending: false,
-    });
+    await processApiResponse(
+      cardTransactionsData,
+      Transaction,
+      {
+        card_id: cardId.toString(),
+        pending: false,
+        userId,
+      },
+      userId
+    );
   });
 
   const pendingAccountTransactionPromises = accountIds.map(
@@ -153,10 +176,16 @@ async function getUserTransactions(Ids, accessToken) {
         `https://api.truelayer-sandbox.com/data/v1/accounts/${accountId}/transactions/pending`,
         accessToken
       );
-      await processApiResponse(pendingAccountTransactionsData, Transaction, {
-        account_id: accountId.toString(),
-        pending: true,
-      });
+      await processApiResponse(
+        pendingAccountTransactionsData,
+        Transaction,
+        {
+          account_id: accountId.toString(),
+          pending: true,
+          userId,
+        },
+        userId
+      );
     }
   );
 
@@ -165,10 +194,16 @@ async function getUserTransactions(Ids, accessToken) {
       `https://${URL}/data/v1/cards/${cardId}/transactions/pending`,
       accessToken
     );
-    await processApiResponse(pendingCardTransactionsData, Transaction, {
-      card_id: cardId.toString(),
-      pending: true,
-    });
+    await processApiResponse(
+      pendingCardTransactionsData,
+      Transaction,
+      {
+        card_id: cardId.toString(),
+        pending: true,
+        userId,
+      },
+      userId
+    );
   });
 
   await Promise.all([
@@ -182,7 +217,7 @@ async function getUserTransactions(Ids, accessToken) {
 }
 
 // Fetch and save user direct debits
-async function getUserDirectDebits(Ids, accessToken) {
+async function getUserDirectDebits(Ids, accessToken, userId) {
   const { accountIds } = Ids;
 
   const directDebitPromises = accountIds.map(async (accountId) => {
@@ -190,9 +225,15 @@ async function getUserDirectDebits(Ids, accessToken) {
       `https://${URL}/data/v1/accounts/${accountId}/direct_debits`,
       accessToken
     );
-    await processApiResponse(directDebitData, DirectDebit, {
-      account_id: accountId,
-    });
+    await processApiResponse(
+      directDebitData,
+      DirectDebit,
+      {
+        account_id: accountId,
+        userId,
+      },
+      userId
+    );
   });
 
   await Promise.all(directDebitPromises);
@@ -200,7 +241,7 @@ async function getUserDirectDebits(Ids, accessToken) {
   return "Direct Debits stored successfully";
 }
 
-async function getUserStandingOders(Ids, accessToken) {
+async function getUserStandingOders(Ids, accessToken, userId) {
   const { accountIds } = Ids;
 
   const standingOrderPromises = accountIds.map(async (accountId) => {
@@ -208,9 +249,15 @@ async function getUserStandingOders(Ids, accessToken) {
       `https://${URL}/data/v1/accounts/${accountId}/standing_orders`,
       accessToken
     );
-    await processApiResponse(standingOrderData, StandingOrder, {
-      account_id: accountId,
-    });
+    await processApiResponse(
+      standingOrderData,
+      StandingOrder,
+      {
+        account_id: accountId,
+        userId,
+      },
+      userId
+    );
   });
 
   await Promise.all(standingOrderPromises);

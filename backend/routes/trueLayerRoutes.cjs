@@ -21,34 +21,24 @@ router.post("/store-user-data", async (req, res) => {
 
   try {
     const userInfo = await getUserInfo(accessToken, userId);
-    //const accounts = await getUserAccounts(accessToken);
-    //const balances = await getUserBalances(accounts, accessToken);
-    //const transactions = await getUserTransactions(accounts, accessToken);
-    //const directDebit = await getUserDirectDebits(accounts, accessToken);
-    //const standingOrders = await getUserStandingOders(accounts, accessToken);
+     const accounts = await getUserAccounts(accessToken , userId);
+     const balances = await getUserBalances(accounts, accessToken, userId);
+     const transactions = await getUserTransactions(accounts, accessToken, userId);
+    const directDebit = await getUserDirectDebits(accounts, accessToken, userId);
+     const standingOrders = await getUserStandingOders(accounts, accessToken, userId);
 
-    console.log("worked", userInfo);
+    
 
-    // res.json(
-    //   `success: ,\n ${userInfo},\n ${accounts},\n ${transactions},\n ${directDebit}, ${standingOrders} `
-    // );
-
-    res.json({ success: true });
+    res.json(
+      `success: ,\n ${userInfo},\n ${accounts},\n ${transactions},\n ${directDebit}, ${standingOrders} `
+    );
+    // res.json("success");
   } catch (error) {
     console.error("Error fetching user data:", error);
     res.status(500).json({ error: "Failed to fetch user data" });
   }
 });
 
-async function retrieveUserId(req) {
-  try {
-    console.log(req.userId);
-    const user = await AuthUser.findOne({ email: req.user.email });
-    const userId = user._id;
-    return userId;
-  } catch (error) {
-    console.error(error);
-  }
-}
+
 
 module.exports = router;

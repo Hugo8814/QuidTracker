@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 // Define the transaction schema
 const transactionSchema = new Schema(
   {
-    // userID: { type: Schema.Types.ObjectId, ref: 'User', required: true },  // Reference to User model
+    userId: { type: String, required: true },
     timestamp: { type: Date, required: true }, // Timestamp of the transaction
     description: { type: String, required: true }, // Description of the transaction
     transaction_type: {

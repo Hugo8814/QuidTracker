@@ -51,6 +51,7 @@ function ConnectPage() {
     const accessToken = localStorage.getItem("access_token");
     const userId = localStorage.getItem("user_id");
     console.log("Access Token:", accessToken);
+    console.log("User ID:", userId);
     try {
       const response = await fetch(
         "http://localhost:3000/api/truelayer/store-user-data",
@@ -59,10 +60,10 @@ function ConnectPage() {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
-            userId: userId,
           },
           body: JSON.stringify({
             access_token: accessToken,
+            userId: userId,
           }),
         }
       );

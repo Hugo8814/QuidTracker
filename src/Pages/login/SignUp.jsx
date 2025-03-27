@@ -32,7 +32,7 @@ function SignUp() {
         const userId = data.user._id; // Get the user ID from the response
         console.log(data.user._id);
 
-        localStorage.setItem("user_Id", userId); // Store the user ID in local storage
+        localStorage.setItem("user_id", userId); // Store the user ID in local storage
         navigate("/connect");
         console.log(data);
       } else if (data.error) {

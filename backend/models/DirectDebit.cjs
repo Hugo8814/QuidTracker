@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
-const directDebitSchema = new mongoose.Schema({
+const directDebitSchema = new Schema({
+  userId: { type: String, required: true },
   direct_debit_id: String,
   timestamp: Date,
   name: String,
