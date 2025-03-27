@@ -18,3 +18,4 @@ const BalanceSchema = new Schema({
 
 const Balance = mongoose.model("Balance", BalanceSchema);
 module.exports = Balance;
+
