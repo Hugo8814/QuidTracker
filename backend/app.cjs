@@ -1,10 +1,10 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const apiRoutes = require("./routes/apiRoutes.cjs");
 const trueLayerRoutes = require("./routes/trueLayerRoutes.cjs");
 const morgan = require("morgan");
 const authRouter = require("./routes/authRoutes.cjs");
-const mongoose = require("mongoose");
 
 dotenv.config(); // Load environment variables from .env fil
 
@@ -35,6 +35,9 @@ app.use("/api/truelayer", trueLayerRoutes);
 
 app.use("/api/auth", authRouter);
 
-const userId = new mongoose.Types.ObjectId();
+app.use("/api", apiRoutes);
 
 module.exports = app;
+
+
+

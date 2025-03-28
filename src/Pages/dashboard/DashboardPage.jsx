@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import bankImg from "../../imgs/nationwide.svg";
+import refresh from "../../imgs/refresh.svg";
+import add from "../../imgs/add.svg";
 
 function DashboardPage() {
   const accessToken = localStorage.getItem("access_token");
@@ -57,12 +59,64 @@ function DashboardPage() {
           </h2>
           <p className="text-[2.5rem] font-semibold ">£3405</p>
         </div>
-
-        <div className="flex flex-col gap-4   bg-[#fff] text-white p-10 px-16 rounded-[2rem]">
-          <div className="bg-white  rounded-full w-[4rem] h-full">
-            <img src={bankImg} className="w-full h-full" alt="bank logo" />
+        <div className="grid grid-cols-3 gap-4">
+          <div className="flex justify-center items-center  gap-6   bg-[#fff] text-white p-6  rounded-[2rem]">
+            <div className="bg-white  rounded-full w-[4rem] h-full">
+              <img src={bankImg} className="w-full h-full" alt="bank logo" />
+            </div>
+            <p className="text-[2.5rem] text-[#0055ff] font-semibold ">£586</p>
           </div>
-          <p className="text-[2.5rem] text-[#0055ff] font-semibold ">£586</p>
+          <div className="flex justify-center items-center  gap-6   bg-[#fff] text-white p-6  rounded-[2rem]">
+            <div className="bg-white  rounded-full w-[4rem] h-full">
+              <img src={bankImg} className="w-full h-full" alt="bank logo" />
+            </div>
+            <p className="text-[2.5rem] text-[#0055ff] font-semibold ">£586</p>
+          </div>
+          <div className="flex justify-center items-center  gap-6   bg-[#fff] text-white p-6  rounded-[2rem]">
+            <div className="bg-white  rounded-full w-[4rem] h-full">
+              <img src={bankImg} className="w-full h-full" alt="bank logo" />
+            </div>
+            <p className="text-[2.5rem] text-[#0055ff] font-semibold ">£586</p>
+          </div>
+          <div className="flex justify-center items-center  gap-6   bg-[#fff] text-white p-6  rounded-[2rem]">
+            <div className="bg-white  rounded-full w-[4rem] h-full">
+              <img src={bankImg} className="w-full h-full" alt="bank logo" />
+            </div>
+            <p className="text-[2.5rem] text-[#0055ff] font-semibold ">£586</p>
+          </div>
+          <div className="flex justify-center items-center  gap-6   bg-[#fff] text-white p-6  rounded-[2rem]">
+            <div className="bg-white  rounded-full w-[4rem] h-full">
+              <img src={bankImg} className="w-full h-full" alt="bank logo" />
+            </div>
+            <p className="text-[2.5rem] text-[#0055ff] font-semibold ">£586</p>
+          </div>
+          <div className="flex justify-center items-center  gap-6   bg-[#fff] text-white p-6  rounded-[2rem]">
+            <div className="bg-white  rounded-full w-[4rem] h-full">
+              <img src={bankImg} className="w-full h-full" alt="bank logo" />
+            </div>
+            <p className="text-[2.5rem] text-[#0055ff] font-semibold ">£586</p>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1  items-center">
+          <div className="flex justify-center items-center  gap-4 rounded-full w-fit h-fit p-1  bg-[#fff] text-white   ">
+            <div className="bg-white  rounded-full w-[4rem] h-full">
+              <img
+                src={refresh}
+                className="w-full h-full fill-[#0055ff]"
+                alt="bank logo"
+              />
+            </div>
+          </div>
+          <div className="flex justify-center items-center  gap-4 rounded-full w-fit h-fit p-1  bg-[#fff] text-white   ">
+            <div className="bg-white  rounded-full w-[4rem] h-full">
+              <img
+                src={add}
+                className="w-full h-full fill-[#0055ff]"
+                alt="bank logo"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

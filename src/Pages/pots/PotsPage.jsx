@@ -7,3 +7,4 @@ function PotsPage() {
 }
 
 export default PotsPage
+
