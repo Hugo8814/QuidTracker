@@ -6,15 +6,45 @@ const {
   getUserCards,
   getAccountBalance,
   getCardBalance,
-  getAllBalances
+  getAllBalances,
+  getAllTransactions,
+  getAllStandingOrders,
+  getAllDirectDebits,
+  getUserBalance
 } = require("../controller/userController.cjs");
 
-router.get("/users/:userId", getUser);
-router.get("/users/accounts/:userId", getUserAccounts);
-router.get("/users/cards/:userId", getUserCards);
-router.get("/users/accounts/:userId/balance", getAccountBalance);
-router.get("/users/cards/:userId/balance", getCardBalance);
-router.get("/users/balances/:userId", getAllBalances);
+const userRouter = express.Router();
+const accountRouter = express.Router();
+const cardRouter = express.Router();
+const transactionRouter = express.Router();
+const balanceRouter = express.Router();
 
+//user
+userRouter.get("/:userId", getUser);
+
+//balance
+balanceRouter.get("/balance/:accountId", getUserBalance);
+balanceRouter.get("/balance/:userId", getAllBalances);
+accountRouter.get("/:userId/balance", getAccountBalance);
+cardRouter.get("/:userId/balance", getCardBalance);
+
+//accounts
+accountRouter.get("/:userId", getUserAccounts);
+
+//cards
+cardRouter.get("/:userId", getUserCards);
+
+
+
+
+transactionRouter.get("/transactions/:userId", getAllTransactions);
+transactionRouter.get("/standingOrders/:userId", getAllStandingOrders);
+transactionRouter.get("/directDebits/:userId", getAllDirectDebits);
+
+router.use("/users", userRouter);
+router.use("/users/accounts", accountRouter);
+router.use("/users/cards", cardRouter);
+router.use("/users", transactionRouter);
+router.use("/users", balanceRouter);
 
 module.exports = router;
