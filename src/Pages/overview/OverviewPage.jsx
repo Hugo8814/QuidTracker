@@ -5,7 +5,7 @@ import AccountsWiget from "./AccountsWiget";
 import TransactionWiget from "./TransactionWiget";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-
+import spendingsWiget from "./SpendingWiget";
 
 function OverviewPage() {
   const token = localStorage.getItem("access_token");
@@ -60,7 +60,9 @@ function OverviewPage() {
           </div>
           <TransactionWiget />
         </div>
-        <div className="w-[50%] h-[40rem] rounded-xl bg-[#c4c4c4]"></div>
+        <div className="w-[50%] h-[40rem] rounded-xl bg-[#c4c4c4]">
+          <SpendingWiget />
+        </div>
       </div>
     </div>
   );
