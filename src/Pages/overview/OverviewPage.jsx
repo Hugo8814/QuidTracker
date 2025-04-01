@@ -3,9 +3,27 @@ import iconCaretRight from "../../imgs/icon-caret-right.svg";
 
 import AccountsWiget from "./AccountsWiget";
 import TransactionWiget from "./TransactionWiget";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+
 
 function OverviewPage() {
-  console.log("Rendering component");
+  const token = localStorage.getItem("access_token");
+  const dispatch = useDispatch();
+  console.log("Rendering OverviewPage");
+  useEffect(() => {
+    if (token) {
+      console.log("Token retrieved:", token);
+    } else {
+      console.log("No token found. Redirecting to login...");
+      window.location.href = "/"; // Redirect if no token
+    }
+  }, [token, dispatch]); // Add dispatch to dependencies
+
+  // Ensure the token is available
+  // if (!token) {
+  //   return <div>Loading...</div>; // Show loading if token is not available
+  // }
 
   return (
     <div className="w-full flex flex-col px-28 py-24 gap-12 overflow-auto max-1400:px-7 max-1200:scale-90 max-1200:px-0 max-1000:scale-100  max-1000:p-10 bg-[#F8F4F0]">
@@ -25,7 +43,7 @@ function OverviewPage() {
 
       <AccountsWiget />
       <div className="flex gap-4">
-        <div className="w-[50%] h-[50rem] rounded-xl bg-[#cccccc]">
+        <div className="w-[50%] h-full  rounded-xl bg-[#cccccc]">
           <div className="flex justify-between p-5 w-full ">
             <div className="text-3xl font-semibold ">Transactions</div>
             <Link

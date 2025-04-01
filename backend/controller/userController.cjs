@@ -228,6 +228,36 @@ async function getAllDirectDebits(req, res) {
   }
 }
 
+async function getOverviewData(req, res) {
+  try {
+    const userId = req.params.userId.trim();
+
+  const user = await User.findOne({ userId: userId });
+    const accounts = await Account.find({ userId: userId });
+    const cards = await Card.find({ userId: userId });
+    const balances = await Balance.find({ userId: userId });
+    const transactions = await Transaction.find({ userId: userId });
+    const standingOrders = await StandingOrder.find({ userId: userId });
+    const directDebits = await DirectDebit.find({ userId: userId });
+
+    
+
+    const overviewData = {
+      user,
+      accounts,
+      cards,
+      balances,
+      transactions,
+      standingOrders,
+      directDebits,
+    };
+
+    res.status(200).json(overviewData);
+  } catch (error) {
+    res.status(404).json({ error: error.message });
+  }
+}
+
 module.exports = {
   getUser,
   getUserCards,
@@ -239,4 +269,5 @@ module.exports = {
   getAllDirectDebits,
   getAllStandingOrders,
   getUserBalance,
+  getOverviewData,
 };

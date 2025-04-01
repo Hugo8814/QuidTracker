@@ -1,33 +1,15 @@
 import { useEffect, useState } from "react";
 import { formatDate } from "../../utils/helpers";
 import bankimg from "../../imgs/nationwide.svg";
+import { useSelector } from "react-redux";
+import { getTransactions } from "../transactions/transactionSlice";
 
 function TransactionWiget() {
-  const [transactions, setTransactions] = useState([]);
-  const userId = localStorage.getItem("user_id");
-  async function fetchTransactions() {
-    try {
-      const response = await fetch(
-        `http://localhost:3000/api/users/transactions/${userId}`
-      );
-      const data = await response.json();
-      setTransactions(data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-  useEffect(() => {
-    fetchTransactions();
-  }, []);
-
-  if (!transactions || !transactions.data || !transactions.data.transactions) {
-    return <div>Loading...</div>;
-  }
-  console.log(transactions.data.transactions);
+  const data = useSelector(getTransactions);
 
   return (
-    <div className="flex  rounded-xl  flex-col p-8 ">
-      {transactions.data.transactions
+    <div className="flex  rounded-xl  flex-col p-8 h-full">
+      {data
         .map((item, index) => (
           <div key={index} className="flex justify-between p-6">
             <div className="flex gap-4 items-center ">

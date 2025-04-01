@@ -90,7 +90,7 @@ const getToken = async (req, res) => {
   }
 };
 const storeUserToken = async (userId, accessToken) => {
-  const authUser = await AuthUser.findOneAndUpdate(
+  const authUser = await AuthUser.findOneAndUpdate( /// this need to be fixed
     { _id: new mongoose.Types.ObjectId(userId) },
     { $set: { token: accessToken } },
     { new: true }

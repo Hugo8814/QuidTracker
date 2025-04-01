@@ -20,12 +20,12 @@ function SideBar() {
         Overview
       </NavBtn>
 
-      <NavBtn logo={transactions}  to="Transactions">
+      <NavBtn logo={transactions} to="Transactions">
         Transactions
       </NavBtn>
 
-      <NavBtn logo={pieChart} to="Budgets">
-        Budgets
+      <NavBtn logo={pieChart} to="Spending">
+        Spending
       </NavBtn>
 
       <NavBtn logo={receipt} to="Pots">

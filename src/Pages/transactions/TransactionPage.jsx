@@ -1,27 +1,28 @@
 // import Header from "../../ui/Header";
-// import { formatCurrency, formatDate } from "../../utils/helpers";
-// import downArrow from "../../../assets/images/icon-caret-down.svg";
-// // import iconCaretLeft from "../../../assets/images/icon-caret-left.svg";
-// // import iconCaretRight from "../../../assets/images/icon-caret-right.svg";
+import { formatCurrency, formatDate } from "../../utils/helpers";
+import downArrow from "../../imgs/icon-caret-down.svg";
+import iconCaretLeft from "../../imgs/icon-caret-left.svg";
+import iconCaretRight from "../../imgs/icon-caret-right.svg";
 import { useSelector } from "react-redux";
 // import sort from "../../../assets/images/icon-sort-mobile.svg";
 
-// import { getTransactions } from "./transactionSlice";
+import bankImg from "../../imgs/nationwide.svg";
+import { getTransactions } from "./transactionSlice";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 // import AddNewTransaction from "../../ui/AddNewTransaction";
 // import filter from "../../../assets/images/icon-filter-mobile.svg";
-// import { useMediaQuery } from "react-responsive";
+import { useMediaQuery } from "react-responsive";
 
 function TransactionsPage() {
-  // const transactions = useSelector(getTransactions);
+  const transactions = useSelector(getTransactions);
   const [searchTerm, setSearchTerm] = useState("");
   const [isdropdownOpen, setIsDropdownOpen] = useState(false);
   const [isdropdownOpen2, setIsDropdownOpen2] = useState(false);
   const [sortBy, setSortBy] = useState("Latest");
   const [category, setCategory] = useState("All Transactions");
 
-  // const isScreenSmall = useMediaQuery({ maxWidth: 700 });
+  const isScreenSmall = useMediaQuery({ maxWidth: 700 });
 
   const [currentPage, setCurrentPage] = useState(1);
   const perPage = 8;
@@ -36,6 +37,7 @@ function TransactionsPage() {
   // const filteredTransactions = transactions.filter((transaction) =>
   //   transaction.name?.toLowerCase().includes(searchTerm.toLowerCase())
   // );
+  console.log(transactions);
 
   function handleDropdown() {
     setIsDropdownOpen(!isdropdownOpen);
@@ -168,18 +170,18 @@ function TransactionsPage() {
                 sort by
               </p>
               <div className="h-full relative space-y-3 text-2xl">
-                {/* {isScreenSmall && (
-                <button onClick={() => handleDropdown()}>
-                  <img src={filter} alt="" />
-                </button>
-                )} */}
+                {isScreenSmall && (
+                  <button onClick={() => handleDropdown()}>
+                    <img src={filter} alt="" />
+                  </button>
+                )}
                 <div className="h-full  max-700:hidden">
                   <button
                     onClick={() => handleDropdown()}
                     className="border-gray-500 border-[1px] px-6 rounded-xl h-full flex items-center gap-24  justify-between font-semibold max-1200:gap-7"
                   >
-                    {/* {sortBy} */}
-                    {/* <img src={downArrow} alt="" /> */}
+                    {sortBy}
+                    <img src={downArrow} alt="" />
                   </button>
                 </div>
                 {isdropdownOpen && (
@@ -243,7 +245,7 @@ function TransactionsPage() {
                   className="border-gray-500 border-[1px] px-6 rounded-xl h-full flex items-center gap-24  justify-between font-semibold max-1200:gap-7  max-700:hidden"
                 >
                   {category}
-                  {/* <img src={downArrow} alt="" /> */}
+                  <img src={downArrow} alt="" />
                 </button>
                 {isdropdownOpen2 && (
                   <div className="absolute w-full bg-white rounded-xl   z-10 border-gray-500 border-[1px] max-700:w-[15rem] max-700:right-0 ">
@@ -339,42 +341,44 @@ function TransactionsPage() {
             </tr>
           </thead>
 
-          {/* <tbody>
-            {sortedTransactions &&
-              sortedTransactions.slice(start, end).map((item, index) => (
+          <tbody>
+            {transactions &&
+              transactions.slice(start, end).map((item, index) => (
                 <tr key={index} className="border-t ">
                   <td className="text-2xl font-normal flex items-center p-6">
                     <img
-                      src={item.avatar}
+                      src={bankImg}
                       className="w-14 rounded-full"
                       alt="icon"
                     />
                     <div className="flex flex-col">
-                      <p className="pl-4 font-bold ">{item.name}</p>
+                      <p className="pl-4 font-bold ">{item.description}</p>
                       <div className="hidden max-500:block pl-4 text-[1.4rem] text-gray-700">
-                        {item.category}
+                        {item.transaction_category}
                       </div>
                     </div>
                   </td>
                   <td className="text-2xl font-normal text-gray-500 max-500:hidden">
-                    {item.category}
+                    {item.transaction_category}
                   </td>
                   <td className="text-2xl font-normal text-gray-500 max-500:hidden">
-                    {formatDate(item.date)}
+                    {formatDate(item.timestamp)}
                   </td>
                   <td className="text-2xl  font-bold text-right">
                     <div className="flex flex-col">
-                      <div style={{ color: item.amount < 0 ? "red" : "green" }}>
-                        {formatCurrency(item.amount)}
-                      </div>
-                      <div className="hidden max-500:block font-normal">
-                        {formatDate(item.date)}
+                      <div
+                        style={{
+                          color:
+                            item.running_balance.amount < 0 ? "red" : "green",
+                        }}
+                      >
+                        {formatCurrency(item.running_balance.amount)}
                       </div>
                     </div>
                   </td>
                 </tr>
               ))}
-          </tbody> */}
+          </tbody>
         </table>
 
         {/* <div className="flex justify-between mt-14 items-center">
@@ -417,5 +421,3 @@ function TransactionsPage() {
 }
 
 export default TransactionsPage;
-
-

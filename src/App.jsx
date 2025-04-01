@@ -4,12 +4,13 @@ import PotsPage from "./Pages/pots/PotsPage";
 import RecurringBillsPage from "./Pages/recurringBills/RecurringPage";
 
 import TransactionsPage from "./Pages/transactions/TransactionPage";
-import BudgetsPage from "./Pages/budgets/BudgetsPage";
+
 import LoginPage from "./Pages/login/LoginPage";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AppLayout from "./ui/AppLayout";
 import SignUp from "./Pages/login/SignUp";
 import ConnectPage from "./Pages/connect/ConnectPage";
+import SpendingPage from "./Pages/spending/SpendingPage";
 
 const router = createBrowserRouter([
   {
@@ -37,8 +38,8 @@ const router = createBrowserRouter([
         element: <TransactionsPage />,
       },
       {
-        path: "Budgets",
-        element: <BudgetsPage />,
+        path: "Spending",
+        element: <SpendingPage />,
       },
       {
         path: "Pots",

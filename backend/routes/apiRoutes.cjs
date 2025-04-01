@@ -10,7 +10,8 @@ const {
   getAllTransactions,
   getAllStandingOrders,
   getAllDirectDebits,
-  getUserBalance
+  getUserBalance,
+  getOverviewData
 } = require("../controller/userController.cjs");
 
 const userRouter = express.Router();
@@ -21,6 +22,7 @@ const balanceRouter = express.Router();
 
 //user
 userRouter.get("/:userId", getUser);
+userRouter.get("/:userId/overview", getOverviewData);
 
 //balance
 balanceRouter.get("/balance/:accountId", getUserBalance);
