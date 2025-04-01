@@ -28,7 +28,7 @@ function LoginPage() {
       console.log(response);
       const data = await response.json();
       if (response.ok) {
-        navigate("/app/Dashboard");
+        navigate("/app/Overview");
       } else if (data.error) {
         setError(data.error);
       }

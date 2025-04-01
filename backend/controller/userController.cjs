@@ -181,7 +181,6 @@ async function getAllTransactions(req, res) {
   }
 }
 
-
 async function getAllStandingOrders(req, res) {
   try {
     const userId = req.params.userId.trim();
@@ -229,7 +228,6 @@ async function getAllDirectDebits(req, res) {
   }
 }
 
- 
 module.exports = {
   getUser,
   getUserCards,
@@ -240,5 +238,5 @@ module.exports = {
   getAllTransactions,
   getAllDirectDebits,
   getAllStandingOrders,
-  getUserBalance
+  getUserBalance,
 };

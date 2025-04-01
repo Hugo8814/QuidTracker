@@ -18,11 +18,6 @@ app.use(express.urlencoded({ extended: true }));
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
-app.use((req, res, next) => {
-  console.log("hello from middleware");
-  next();
-});
-//
 
 // 2) ROUTES
 app.get("/", (req, res) => {
@@ -36,8 +31,11 @@ app.use("/api/truelayer", trueLayerRoutes);
 app.use("/api/auth", authRouter);
 
 app.use("/api", apiRoutes);
+app.use("/api/users/balance/:userId", (req, res) => {
+  res.status(200).json({
+    status: "success",
+    message: "Welcome to the API",
+  });
+});
 
 module.exports = app;
-
-
-

@@ -24,7 +24,7 @@ userRouter.get("/:userId", getUser);
 
 //balance
 balanceRouter.get("/balance/:accountId", getUserBalance);
-balanceRouter.get("/balance/:userId", getAllBalances);
+balanceRouter.get("/balances/:userId", getAllBalances);
 accountRouter.get("/:userId/balance", getAccountBalance);
 cardRouter.get("/:userId/balance", getCardBalance);
 
@@ -34,9 +34,7 @@ accountRouter.get("/:userId", getUserAccounts);
 //cards
 cardRouter.get("/:userId", getUserCards);
 
-
-
-
+//transactions
 transactionRouter.get("/transactions/:userId", getAllTransactions);
 transactionRouter.get("/standingOrders/:userId", getAllStandingOrders);
 transactionRouter.get("/directDebits/:userId", getAllDirectDebits);
@@ -47,4 +45,6 @@ router.use("/users/cards", cardRouter);
 router.use("/users", transactionRouter);
 router.use("/users", balanceRouter);
 
+
 module.exports = router;
+

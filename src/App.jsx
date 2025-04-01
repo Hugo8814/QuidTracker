@@ -1,4 +1,4 @@
-import DashboardPage from "./Pages/dashboard/DashboardPage";
+import OverviewPage from "./Pages/Overview/OverviewPage";
 import PotsPage from "./Pages/pots/PotsPage";
 
 import RecurringBillsPage from "./Pages/recurringBills/RecurringPage";
@@ -29,8 +29,8 @@ const router = createBrowserRouter([
     element: <AppLayout />,
     children: [
       {
-        path: "Dashboard",
-        element: <DashboardPage />,
+        path: "Overview",
+        element: <OverviewPage />,
       },
       {
         path: "Transactions",

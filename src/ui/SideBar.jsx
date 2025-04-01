@@ -16,7 +16,7 @@ function SideBar() {
       </div>
 
       {/* Navigation Links */}
-      <NavBtn logo={home} to="Dashboard">
+      <NavBtn logo={home} to="Overview">
         Overview
       </NavBtn>
 
