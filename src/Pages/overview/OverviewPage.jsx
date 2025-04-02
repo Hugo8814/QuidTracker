@@ -5,20 +5,20 @@ import AccountsWiget from "./AccountsWiget";
 import TransactionWiget from "./TransactionWiget";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import spendingsWiget from "./SpendingWiget";
+import SpendingWiget from "./SpendingWiget";
 
 function OverviewPage() {
   const token = localStorage.getItem("access_token");
   const dispatch = useDispatch();
   console.log("Rendering OverviewPage");
-  useEffect(() => {
-    if (token) {
-      console.log("Token retrieved:", token);
-    } else {
-      console.log("No token found. Redirecting to login...");
-      window.location.href = "/"; // Redirect if no token
-    }
-  }, [token, dispatch]); // Add dispatch to dependencies
+  // useEffect(() => {
+  //   if (token) {
+  //     console.log("Token retrieved:", token);
+  //   } else {
+  //     console.log("No token found. Redirecting to login...");
+  //     window.location.href = "/"; // Redirect if no token
+  //   }
+  // }, [token, dispatch]); // Add dispatch to dependencies
 
   // Ensure the token is available
   // if (!token) {
@@ -43,8 +43,8 @@ function OverviewPage() {
 
       <AccountsWiget />
       <div className="flex gap-4">
-        <div className="w-[50%] h-full  rounded-xl bg-[#cccccc]">
-          <div className="flex justify-between p-5 w-full ">
+        <div className="w-[50%] h-full  rounded-xl bg-[white]">
+          <div className="flex justify-between p-8 w-full ">
             <div className="text-3xl font-semibold ">Transactions</div>
             <Link
               to="/app/transactions"
@@ -60,7 +60,8 @@ function OverviewPage() {
           </div>
           <TransactionWiget />
         </div>
-        <div className="w-[50%] h-[40rem] rounded-xl bg-[#c4c4c4]">
+        <div className="w-[50%] h-[40rem] rounded-xl bg-white">
+         
           <SpendingWiget />
         </div>
       </div>
