@@ -72,7 +72,7 @@ export default function SpendingChart() {
           tickLine={false}
           tick={{ fill: "#6b6b6b" }}
           padding={{ left: 0, right: 0 }}
-          ticks={xAxisTicks} // Display only selected ticks
+          ticks={xAxisTicks} // Display only selected tick
         />
 
         <Line
