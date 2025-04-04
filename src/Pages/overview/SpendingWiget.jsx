@@ -2,17 +2,22 @@ import SpendingChart from "../spending/SpendingChart";
 
 //import spendingPots from "./spendingPots";
 import { formatCurrency } from "../../utils/helpers";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getSpendingData, getSpendingTotal } from "../spending/spendingSlice";
-//
+
 import { useMemo } from "react";
-import { getTransactions } from "../transactions/transactionSlice";
+import {
+  getMonthlySpending,
+  getTransactions,
+  getTransactionsTotal,
+} from "../transactions/transactionSlice";
 import up from "../../imgs/up.svg";
 import iconCaretRight from "../../imgs/icon-caret-right.svg";
 import settingBar from "../../imgs/settingBar.svg";
 import { Link } from "react-router-dom";
 
 function SpendingWiget() {
+  const dispatch = useDispatch();
   const spendingData = useSelector(getSpendingData);
   const data = useSelector(getTransactions);
   console.log(data);
@@ -36,6 +41,10 @@ function SpendingWiget() {
     return null;
   }
 
+  const total = useSelector(getTransactionsTotal);
+  const MonthlySpending = useSelector(getMonthlySpending);
+  console.log(total);
+  console.log(MonthlySpending);
   return (
     <div className="flex gap-10 bg-white rounded-md h-content w-full flex-col p-10 ">
       <div className="flex justify-between  w-full ">
@@ -54,7 +63,9 @@ function SpendingWiget() {
             <div className="text-2xl gap-2 font-semibold text-gray-500">
               March spending
             </div>
-            <div className="text-3xl  font-semibold">£245.00</div>
+            <div className="text-3xl  font-semibold">
+              {formatCurrency(MonthlySpending?.March?.total.toFixed(2))}
+            </div>
           </div>
           <div className="flex   rounded-lg p-4 ">
             <div className=" flex gap-1 text-xl font-bold border-[#0055ff] border-2 p-2 rounded-2xl items-center">

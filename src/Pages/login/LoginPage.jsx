@@ -28,13 +28,16 @@ function LoginPage() {
       console.log(response);
       const data = await response.json();
       if (response.ok) {
+        const { token, userId } = data;
+        localStorage.setItem("access_token", token);
+        localStorage.setItem("user_id", userId);
         navigate("/app/Overview");
       } else if (data.error) {
         setError(data.error);
       }
       console.log(data);
     } catch (error) {
-      console.error("Error registering:", error);
+      console.error("Error logging in user:", error);
     }
   };
   return (

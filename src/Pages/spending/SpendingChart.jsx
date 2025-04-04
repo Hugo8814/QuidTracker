@@ -7,6 +7,7 @@ import {
   Dot,
   Scatter,
 } from "recharts";
+console.disableYellowBox = true;
 
 let febTotal = 0;
 let marTotal = 0;
@@ -66,6 +67,7 @@ export default function SpendingChart() {
           }}
           itemStyle={{ color: "black" }}
         />
+        {/* // eslint-disable-next-line react/default-props-match-prop-types */}
         <XAxis
           dataKey="name"
           axisLine={false}
@@ -79,9 +81,16 @@ export default function SpendingChart() {
           dataKey="feb"
           stroke="#e8e8e8"
           strokeWidth={3}
-          dot={(props) =>
-            props.payload.name === lastData.name ? (
-              <circle cx={props.cx} cy={props.cy} r={4} fill="#e8e8e8" />
+          dot={(props, index) =>
+            props.payload.name === newestData.name &&
+            props.payload.mar !== 0 ? (
+              <circle
+                key={props.payload.name + index} // Add a unique key prop
+                cx={props.cx}
+                cy={props.cy}
+                r={4}
+                fill="#0055ff"
+              />
             ) : null
           }
         />
@@ -89,10 +98,16 @@ export default function SpendingChart() {
           dataKey="mar"
           stroke="#0055ff"
           strokeWidth={3}
-          dot={(props) =>
+          dot={(props, index) =>
             props.payload.name === newestData.name &&
             props.payload.mar !== 0 ? (
-              <circle cx={props.cx} cy={props.cy} r={4} fill="#0055ff" />
+              <circle
+                key={props.payload.name + index} // Add a unique key prop
+                cx={props.cx}
+                cy={props.cy}
+                r={4}
+                fill="#0055ff"
+              />
             ) : null
           }
         />

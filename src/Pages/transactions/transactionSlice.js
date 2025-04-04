@@ -23,16 +23,59 @@ const transactionSlice = createSlice({
 export const { setTransactions, addTransaction, addRecurringTransaction } =
   transactionSlice.actions;
 
-export const getTransactions = (state) => state.transactions.transactions;
+export const getTransactions = (state) => state.transactions.transactions || [];
+
 export const getRecurringTransactions = (state) =>
   state.transactions.recurringTransactions; // Selector for recurring transactions
 
 export const getTransactionsTotal = createSelector(
   [getTransactions],
+  (transactions) =>
+    transactions.reduce(
+      (total, item) => total + (item.running_balance?.amount || 0),
+      0
+    )
+);
+
+export const getMonthlySpending = createSelector(
+  [getTransactions],
   (transactions) => {
-    return transactions.reduce((total, item) => total + item.amount, 0);
+    const monthlySpending = {};
+
+    transactions.forEach((transaction) => {
+      const date = new Date(transaction.timestamp);
+      if (isNaN(date)) {
+        console.warn("Invalid Date:", transaction.timestamp);
+        return;
+      }
+
+      const month = date.toLocaleString("default", { month: "long" });
+
+      if (!monthlySpending[month]) {
+        monthlySpending[month] = {
+          income: 0,
+          expenses: 0,
+          total: 0,
+        };
+      }
+
+      if (transaction.running_balance && transaction.running_balance.amount) {
+        if (transaction.running_balance.amount > 0) {
+          monthlySpending[month].income += transaction.running_balance.amount;
+        } else {
+          monthlySpending[month].expenses += Math.abs(
+            transaction.running_balance.amount
+          );
+        }
+        monthlySpending[month].total =
+          monthlySpending[month].income - monthlySpending[month].expenses;
+      }
+    });
+
+    return monthlySpending;
   }
 );
+
 export const getTransactionIncome = createSelector(
   [getTransactions],
   (transactions) => {

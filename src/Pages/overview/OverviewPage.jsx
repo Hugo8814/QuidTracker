@@ -25,6 +25,12 @@ function OverviewPage() {
   //   return <div>Loading...</div>; // Show loading if token is not available
   // }
 
+  const handleLogout = () => {
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user_id");
+    window.location.href = "/"; // Redirect to login page
+  };
+
   return (
     <div className="w-full flex flex-col px-28 py-24 gap-12 overflow-auto max-1400:px-7 max-1200:scale-90 max-1200:px-0 max-1000:scale-100  max-1000:p-10 bg-[#F8F4F0]">
       <div className="flex justify-between items-center ">
@@ -35,7 +41,7 @@ function OverviewPage() {
         <Link
           to="/"
           className="bg-[#0055ff] shadow-md text-white text-2xl font-semibold p-3 rounded-xl max-500:text-2xl"
-          //onClick={handleLogout}
+          onClick={handleLogout}
         >
           Log Out
         </Link>
