@@ -3,10 +3,10 @@ import { useEffect } from "react";
 console.log(import.meta.env.CLIENT_ID_SANDBOX);
 
 function ConnectPage() {
-  // const AUTH_URL =
-  //   "https://auth.truelayer.com/?response_type=code&client_id=quidtracker-48cd14&scope=info%20accounts%20balance%20cards%20transactions%20direct_debits%20standing_orders%20offline_access&redirect_uri=http://localhost:5173/connect&providers=uk-ob-all%20uk-oauth-all";
+   const AUTH_URL =
+     "https://auth.truelayer.com/?response_type=code&client_id=quidtracker-48cd14&scope=info%20accounts%20balance%20cards%20transactions%20direct_debits%20standing_orders%20offline_access&redirect_uri=http://localhost:5173/connect&providers=uk-ob-all%20uk-oauth-all";
 
-  const AUTH_URL = `https://auth.truelayer-sandbox.com/?response_type=code&client_id=sandbox-quidtracker-48cd14&scope=info%20accounts%20balance%20cards%20transactions%20direct_debits%20standing_orders%20offline_access&redirect_uri=http://localhost:5173/connect&providers=uk-cs-mock%20uk-ob-all%20uk-oauth-all`; // this link works the other doesn't
+  //const AUTH_URL = `https://auth.truelayer-sandbox.com/?response_type=code&client_id=sandbox-quidtracker-48cd14&scope=info%20accounts%20balance%20cards%20transactions%20direct_debits%20standing_orders%20offline_access&redirect_uri=http://localhost:5173/connect&providers=uk-cs-mock%20uk-ob-all%20uk-oauth-all`; // this link works the other doesn't
   // const AUTH_URL =
   //   import.meta.env.MODE === "production"
   //     ? `https://auth.truelayer.com/?response_type=code&client_id=${import.meta.env.CLIENT_ID_PROD}&scope=info%20accounts%20balance%20cards%20transactions%20direct_debits%20standing_orders%20offline_access&redirect_uri=${import.meta.env.REDIRECT_URI}&providers=uk-cs-mock%20uk-ob-all%20uk-oauth-all`

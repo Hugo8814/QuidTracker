@@ -5,7 +5,7 @@ const Transaction = require("../models/Transaction.cjs");
 const DirectDebit = require("../models/DirectDebit.cjs");
 const StandingOrder = require("../models/StandingOrder.cjs");
 const User = require("../models/User.cjs");
-const URL = "api.truelayer-sandbox.com";
+const URL = "api.truelayer.com";
 console.log(URL);
 
 // Utility function to handle fetch requests
@@ -85,8 +85,11 @@ async function getUserAccounts(accessToken, userId) {
 
     return accountIds;
   } catch (error) {
-    console.error(error);
-    throw error;
+    if (error.message.includes('501 Not Implemented')) {
+      console.log('Account data not available for this bank');
+    } else {
+      throw error;
+    }
   }
 }
 

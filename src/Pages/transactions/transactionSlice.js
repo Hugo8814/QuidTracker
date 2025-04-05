@@ -75,6 +75,41 @@ export const getMonthlySpending = createSelector(
     return monthlySpending;
   }
 );
+export const getMonthlyData = createSelector(
+  [getTransactions],
+  (transactions) => {
+    const monthlyData = {};
+
+    transactions.forEach((transaction) => {
+      const date = new Date(transaction.timestamp);
+      const month = date.toLocaleString("default", { month: "long" });
+      const day = date.getDate();
+
+      if (!monthlyData[month]) {
+        monthlyData[month] = {};
+      }
+
+      if (!monthlyData[month][day]) {
+        monthlyData[month][day] = {
+          expenses: 0,
+          income: 0,
+        };
+      }
+
+      if (transaction.running_balance && transaction.running_balance.amount) {
+        if (transaction.running_balance.amount > 0) {
+          monthlyData[month][day].income += transaction.running_balance.amount;
+        } else {
+          monthlyData[month][day].expenses += Math.abs(
+            transaction.running_balance.amount
+          );
+        }
+      }
+    });
+
+    return monthlyData;
+  }
+);
 
 export const getTransactionIncome = createSelector(
   [getTransactions],

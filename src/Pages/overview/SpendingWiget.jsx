@@ -7,6 +7,7 @@ import { getSpendingData, getSpendingTotal } from "../spending/spendingSlice";
 
 import { useMemo } from "react";
 import {
+  getMonthlyData,
   getMonthlySpending,
   getTransactions,
   getTransactionsTotal,
@@ -15,6 +16,7 @@ import up from "../../imgs/up.svg";
 import iconCaretRight from "../../imgs/icon-caret-right.svg";
 import settingBar from "../../imgs/settingBar.svg";
 import { Link } from "react-router-dom";
+import { get } from "mongoose";
 
 function SpendingWiget() {
   const dispatch = useDispatch();
@@ -43,8 +45,16 @@ function SpendingWiget() {
 
   const total = useSelector(getTransactionsTotal);
   const MonthlySpending = useSelector(getMonthlySpending);
-  console.log(total);
-  console.log(MonthlySpending);
+  console.log("monthly", MonthlySpending);
+
+  const today = new Date();
+  const currentDay = today.toLocaleDateString("GB", {
+    day: "numeric",
+    month: "short",
+  });
+
+  const MonthlyData = useSelector(getMonthlyData);
+  console.log(MonthlyData);
   return (
     <div className="flex gap-10 bg-white rounded-md h-content w-full flex-col p-10 ">
       <div className="flex justify-between  w-full ">
@@ -84,12 +94,14 @@ function SpendingWiget() {
               <div className="w-5">
                 <img src={up} alt="" />
               </div>
-              <p className=" flex w-full text-gray-500 text-xl">vs 24th feb</p>
+              <p className=" flex w-full text-gray-500 text-xl">
+                vs {currentDay}
+              </p>
             </div>
           </div>
         </div>
 
-        <SpendingChart />
+        <SpendingChart data={MonthlyData} />
 
         {/* <div className=" grid grid-cols-1 gird-rows-4 gap-4  max-500:grid-cols-[auto,auto,auto,auto] max-500:gap-0">
          
