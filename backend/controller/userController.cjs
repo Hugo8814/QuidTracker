@@ -20,7 +20,13 @@ async function getUserAccounts(req, res) {
 
     const accounts = await Account.find({ userId: userId });
     if (!accounts || accounts.length === 0) {
-      return res.status(404).json({ error: "accounts not found" });
+      return res.status(200).json({
+        status: "success",
+        results: 0,
+        data: {
+          accounts: [],
+        },
+      });
     }
 
     res.status(200).json({
@@ -45,7 +51,13 @@ async function getUserCards(req, res) {
     const cards = await Card.find({ userId: userId });
 
     if (!cards || cards.length === 0) {
-      return res.status(404).json({ error: "cards not found" });
+      return res.status(200).json({
+        status: "success",
+        results: 0,
+        data: {
+          cards: [],
+        },
+      });
     }
 
     res.status(200).json({
@@ -69,7 +81,13 @@ async function getAllBalances(req, res) {
 
     const balances = await Balance.find({ userId: userId });
     if (!balances || balances.length === 0) {
-      return res.status(404).json({ error: "balances not found" });
+      return res.status(200).json({
+        status: "success",
+        results: 0,
+        data: {
+          balances: [],
+        },
+      });
     }
 
     res.status(200).json({
@@ -93,7 +111,13 @@ async function getAccountBalance(req, res) {
 
     const balances = await Balance.find({ userId: userId, type: "account" });
     if (!balances || balances.length === 0) {
-      return res.status(404).json({ error: "balances not found" });
+      return res.status(200).json({
+        status: "success",
+        results: 0,
+        data: {
+          balances: [],
+        },
+      });
     }
 
     res.status(200).json({
@@ -117,7 +141,13 @@ async function getCardBalance(req, res) {
 
     const balances = await Balance.find({ userId: userId, type: "card" });
     if (!balances || balances.length === 0) {
-      return res.status(404).json({ error: "balances not found" });
+      return res.status(200).json({
+        status: "success",
+        results: 0,
+        data: {
+          balances: [],
+        },
+      });
     }
 
     res.status(200).json({
@@ -140,7 +170,13 @@ async function getUserBalance(req, res) {
 
     const balance = await Balance.findOne({ accountId });
     if (!balance) {
-      return res.status(404).json({ error: "balance not found" });
+      return res.status(200).json({
+        status: "success",
+        results: 0,
+        data: {
+          balance: [],
+        },
+      });
     }
 
     res.status(200).json({
@@ -163,7 +199,13 @@ async function getAllTransactions(req, res) {
 
     const transactions = await Transaction.find({ userId: userId });
     if (!transactions || transactions.length === 0) {
-      return res.status(404).json({ error: "transactions not found" });
+      return res.status(200).json({
+        status: "success",
+        results: 0,
+        data: {
+          transactions: [],
+        },
+      });
     }
 
     res.status(200).json({
@@ -187,7 +229,13 @@ async function getAllStandingOrders(req, res) {
 
     const standingOrders = await StandingOrder.find({ userId: userId });
     if (!standingOrders || standingOrders.length === 0) {
-      return res.status(404).json({ error: "standingOrders not found" });
+      return res.status(200).json({
+        status: "success",
+        results: 0,
+        data: {
+          standingOrders: [],
+        },
+      });
     }
 
     res.status(200).json({
@@ -210,7 +258,13 @@ async function getAllDirectDebits(req, res) {
 
     const directDebits = await DirectDebit.find({ userId: userId });
     if (!directDebits || directDebits.length === 0) {
-      return res.status(404).json({ error: "directDebits not found" });
+      return res.status(200).json({
+        status: "success",
+        results: 0,
+        data: {
+          directDebits: [],
+        },
+      });
     }
 
     res.status(200).json({
@@ -232,7 +286,7 @@ async function getOverviewData(req, res) {
   try {
     const userId = req.params.userId.trim();
 
-  const user = await User.findOne({ userId: userId });
+    const user = await User.findOne({ userId: userId });
     const accounts = await Account.find({ userId: userId });
     const cards = await Card.find({ userId: userId });
     const balances = await Balance.find({ userId: userId });
@@ -240,16 +294,14 @@ async function getOverviewData(req, res) {
     const standingOrders = await StandingOrder.find({ userId: userId });
     const directDebits = await DirectDebit.find({ userId: userId });
 
-    
-
     const overviewData = {
       user,
-      accounts,
-      cards,
-      balances,
-      transactions,
-      standingOrders,
-      directDebits,
+      accounts: accounts || [],
+      cards: cards || [],
+      balances: balances || [],
+      transactions: transactions || [],
+      standingOrders: standingOrders || [],
+      directDebits: directDebits || [],
     };
 
     res.status(200).json(overviewData);

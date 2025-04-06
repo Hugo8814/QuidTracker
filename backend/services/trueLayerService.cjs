@@ -67,6 +67,10 @@ async function getUserAccounts(accessToken, userId) {
       `https://${URL}/data/v1/accounts`,
       accessToken
     );
+    if (!accountsData.results || accountsData.results.length === 0) {
+      console.log("No account data found for this user");
+      return "No account data found";
+    }
     accountsData.results.forEach((account) => {
       account.update_timestamp = new Date(account.update_timestamp);
     });
@@ -76,6 +80,10 @@ async function getUserAccounts(accessToken, userId) {
       `https://${URL}/data/v1/cards`,
       accessToken
     );
+    if (!cardsData.results || cardsData.results.length === 0) {
+      console.log("No card data found for this user");
+      return "No card data found";
+    }
     await processApiResponse(cardsData, Card, { userId }, userId);
 
     const accountIds = {
@@ -85,14 +93,15 @@ async function getUserAccounts(accessToken, userId) {
 
     return accountIds;
   } catch (error) {
-    if (error.message.includes('501 Not Implemented')) {
-      console.log('Account data not available for this bank');
+    if (error.response && error.response.status === 404) {
+      console.log("No account data found for this user");
+      return "No account data found";
     } else {
+      console.error("Error fetching account data:", error);
       throw error;
     }
   }
 }
-
 // Fetch and save user balances
 async function getUserBalances(Ids, accessToken, userId) {
   const { accountIds, cardIds } = Ids;
