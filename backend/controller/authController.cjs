@@ -59,45 +59,91 @@ const authenticate = async (req, res, next) => {
   // Authentication middleware logic here
 };
 
+// const getToken = async (req, res) => {
+//   console.log("Request body:", req.body);
+//   const { code } = req.body;
+//   if (!code) {
+//     return res.status(400).json({ error: "Authorization code is required" });
+//   }
+//   try {
+//     const tokenResponse = await fetch(
+//       `https://auth.truelayer.com/connect/token`,
+//       {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/x-www-form-urlencoded",
+//           Authorization: `Basic ${Buffer.from(`${CLIENT_ID_SANDBOX}:${CLIENT_SECRET}`).toString("base64")}`,
+//         },
+//         body: new URLSearchParams({
+//           grant_type: "authorization_code",
+//           redirect_uri: REDIRECT_URI,
+//           code: code,
+//         }),
+//       }
+//     );
+//     const tokenData = await tokenResponse.json();
+//     if (!tokenResponse.ok) {
+//       throw new Error(JSON.stringify(tokenData));
+//     }
+//     res.json(tokenData);
+//   } catch (error) {
+//     console.error("Error fetching access token:", error);
+//     res.status(500).json({ error: "Failed to fetch access token" });
+//   }
+// };
+
 const getToken = async (req, res) => {
-  console.log("Request body:", req.body);
-  const { code } = req.body;
-  if (!code) {
-    return res.status(400).json({ error: "Authorization code is required" });
-  }
   try {
+    const { code, userId } = req.body;
+
     const tokenResponse = await fetch(
       `https://auth.truelayer.com/connect/token`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
-          Authorization: `Basic ${Buffer.from(`${CLIENT_ID_SANDBOX}:${CLIENT_SECRET}`).toString("base64")}`,
         },
         body: new URLSearchParams({
           grant_type: "authorization_code",
-          redirect_uri: REDIRECT_URI,
           code: code,
+          client_id: CLIENT_ID_SANDBOX,
+          client_secret:CLIENT_SECRET,
+          redirect_uri:REDIRECT_URI,
         }),
       }
     );
+
     const tokenData = await tokenResponse.json();
     if (!tokenResponse.ok) {
       throw new Error(JSON.stringify(tokenData));
     }
+
+    // Store tokens in the database
+    await storeUserToken(
+      userId,
+      tokenData.access_token,
+      tokenData.refresh_token
+    );
+
     res.json(tokenData);
   } catch (error) {
     console.error("Error fetching access token:", error);
     res.status(500).json({ error: "Failed to fetch access token" });
   }
 };
-const storeUserToken = async (userId, accessToken) => {
-  const authUser = await AuthUser.findOneAndUpdate(
-    /// this need to be fixed
-    { _id: new mongoose.Types.ObjectId(userId) },
-    { $set: { token: accessToken } },
-    { new: true }
-  );
-  return "user info stored successfully";
+const storeUserToken = async (userId, accessToken, refreshToken) => {
+  try {
+    const authUser = await AuthUser.findOneAndUpdate(
+      { userId },
+      { $set: { token: accessToken, refresh_token: refreshToken } }, // Save both tokens
+      { new: true, upsert: true } // Create a new document if it doesn't exist
+    );
+    console.log("Tokens stored successfully for user:", userId);
+    return authUser;
+  } catch (error) {
+    console.error("Error storing tokens:", error);
+    throw new Error("Failed to store tokens");
+  }
 };
+
 module.exports = { register, login, authenticate, getToken, storeUserToken };

@@ -8,6 +8,9 @@ const User = require("../models/User.cjs");
 const URL = "api.truelayer.com";
 console.log(URL);
 
+const CLIENT_ID = "quidtracker-48cd14";
+const CLIENT_SECRET = "a8b948ed-a40b-4d72-a612-f84a75dab83a";
+
 // Utility function to handle fetch requests
 async function fetchData(url, accessToken) {
   const response = await fetch(url, {
@@ -277,8 +280,9 @@ async function getUserStandingOders(Ids, accessToken, userId) {
 
   return "Standing Orders stored successfully";
 }
-async function refreshUserToken(userId) {
+async function refreshUserToken(userId, refreshToken) {
   try {
+    console.log("Refreshing token for user:", refreshToken);
     const response = await fetch("https://auth.truelayer.com/connect/token", {
       method: "POST",
       headers: {
@@ -286,13 +290,15 @@ async function refreshUserToken(userId) {
       },
       body: new URLSearchParams({
         grant_type: "refresh_token",
-        refresh_token: "your_refresh_token", // Replace with the actual refresh token
-        client_id: "your_client_id",
-        client_secret: "your_client_secret",
+        refresh_token: refreshToken, // Replace with the actual refresh token
+        client_id: CLIENT_ID,
+        client_secret: CLIENT_SECRET,
       }),
     });
 
     if (!response.ok) {
+      const errorText = await response.text(); // Log the full response body
+      console.error("Error response from TrueLayer:", errorText);
       throw new Error(
         `Error refreshing token: ${response.status} ${response.statusText}`
       );
@@ -305,7 +311,6 @@ async function refreshUserToken(userId) {
     throw new Error("Failed to refresh token");
   }
 }
-
 
 module.exports = {
   getUserInfo,

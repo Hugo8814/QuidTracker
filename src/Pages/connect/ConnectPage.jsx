@@ -41,6 +41,8 @@ function ConnectPage() {
       console.log("Access Token:", data.access_token);
       if (data.access_token) {
         localStorage.setItem("access_token", data.access_token);
+        localStorage.setItem("refresh_token", data.refresh_token);
+
         await storeUserData();
       }
     } catch (error) {
@@ -50,6 +52,7 @@ function ConnectPage() {
   async function storeUserData() {
     const accessToken = localStorage.getItem("access_token");
     const userId = localStorage.getItem("user_id");
+    const refreshToken = localStorage.getItem("refresh_token");
     console.log("Access Token:", accessToken);
     console.log("User ID:", userId);
     try {
@@ -64,6 +67,7 @@ function ConnectPage() {
           body: JSON.stringify({
             access_token: accessToken,
             userId: userId,
+            refresh_token: refreshToken,
           }),
         }
       );

@@ -16,6 +16,7 @@ const router = express.Router();
 router.post("/store-user-data", async (req, res) => {
   const accessToken = req.headers.authorization.split(" ")[1];
   const userId = req.body.userId;
+  const refreshToken = req.body.refresh_token; // Assuming you want to use this in the future
   console.log(userId, "userid");
 
   if (!accessToken) {
@@ -41,7 +42,7 @@ router.post("/store-user-data", async (req, res) => {
       accessToken,
       userId
     );
-    const authUser = await storeUserToken(userId, accessToken);
+    const authUser = await storeUserToken(userId, accessToken, refreshToken);
 
     res.json(
       `success: ,\n ${userInfo},\n ${accounts},\n ${transactions},\n ${directDebit}, ${standingOrders} ,\n ${balances} ,\n ${authUser}`
@@ -55,13 +56,14 @@ router.post("/store-user-data", async (req, res) => {
 // New route for refreshing the token
 router.post("/refresh-token", async (req, res) => {
   const userId = req.body.userId;
+  const refreshToken = req.body.refresh_token; // Assuming you want to use this in the future
 
   if (!userId) {
     return res.status(400).json({ error: "User ID is required" });
   }
 
   try {
-    const refreshedToken = await refreshUserToken(userId); // Call the service function
+    const refreshedToken = await refreshUserToken(userId, refreshToken); // Call the service function
     await storeUserToken(userId, refreshedToken); // Store the refreshed token
     res.json({ success: true, token: refreshedToken });
   } catch (error) {

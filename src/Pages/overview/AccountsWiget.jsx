@@ -8,9 +8,40 @@ import { Link } from "react-router-dom";
 function AccountsWiget() {
   const accessToken = localStorage.getItem("access_token");
   const userId = localStorage.getItem("user_id");
+  const refreshToken = localStorage.getItem("refresh_token");
   const [cards, setCards] = useState([]);
   const [accounts, setAccounts] = useState([]);
   const [balances, setBalances] = useState({});
+
+  // Function to refresh the token
+  const handleRefresh = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:3000/api/truelayer/refresh-token",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ userId, refresh_token: refreshToken }), // Pass the userId in the body
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("Token refreshed successfully:", data.token);
+        localStorage.setItem("access_token", data.token); // Update the access token in localStorage
+        alert("Token refreshed successfully!");
+      } else {
+        console.error("Error refreshing token:", data.error);
+        alert("Failed to refresh token. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error making refresh token request:", error);
+      alert("An error occurred while refreshing the token.");
+    }
+  };
 
   useEffect(() => {
     async function fetchAllData() {
@@ -95,7 +126,10 @@ function AccountsWiget() {
         ))}
       </div>
       <div className="grid grid-cols-1 items-center">
-        <div className="flex justify-center items-center gap-4 rounded-full w-fit h-fit p-1 bg-[#fff] text-white">
+        <div
+          className="flex justify-center items-center gap-4 rounded-full w-fit h-fit p-1 bg-[#fff] text-white"
+          onClick={handleRefresh} // Add the onClick event here
+        >
           <div className="bg-white rounded-full w-[4rem] h-full">
             <img src={refresh} className="w-full h-full" alt="Refresh" />
           </div>
