@@ -20,7 +20,7 @@
 
 /* Apply global styles */
 html {
-  font-size: 62.5%; /* This sets the root font size to 10px */
+  font-size: 75%; /* This sets the root font size to 10px should be at 62.5% */  
   font-family: "Manrope", "Public sans"; /* Set Public Sans as the default font */
 }
 

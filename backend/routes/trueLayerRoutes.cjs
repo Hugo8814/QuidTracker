@@ -7,10 +7,12 @@ const {
   getUserTransactions,
   getUserDirectDebits,
   getUserStandingOders,
+  refreshUserToken, // Import the new service function
 } = require("../services/trueLayerService.cjs");
 
 const router = express.Router();
 
+// Existing route
 router.post("/store-user-data", async (req, res) => {
   const accessToken = req.headers.authorization.split(" ")[1];
   const userId = req.body.userId;
@@ -44,10 +46,27 @@ router.post("/store-user-data", async (req, res) => {
     res.json(
       `success: ,\n ${userInfo},\n ${accounts},\n ${transactions},\n ${directDebit}, ${standingOrders} ,\n ${balances} ,\n ${authUser}`
     );
-    
   } catch (error) {
     console.error("Error fetching user data:", error);
     res.status(500).json({ error: "Failed to fetch user data" });
+  }
+});
+
+// New route for refreshing the token
+router.post("/refresh-token", async (req, res) => {
+  const userId = req.body.userId;
+
+  if (!userId) {
+    return res.status(400).json({ error: "User ID is required" });
+  }
+
+  try {
+    const refreshedToken = await refreshUserToken(userId); // Call the service function
+    await storeUserToken(userId, refreshedToken); // Store the refreshed token
+    res.json({ success: true, token: refreshedToken });
+  } catch (error) {
+    console.error("Error refreshing token:", error);
+    res.status(500).json({ error: "Failed to refresh token" });
   }
 });
 

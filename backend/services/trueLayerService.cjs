@@ -277,6 +277,35 @@ async function getUserStandingOders(Ids, accessToken, userId) {
 
   return "Standing Orders stored successfully";
 }
+async function refreshUserToken(userId) {
+  try {
+    const response = await fetch("https://auth.truelayer.com/connect/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        grant_type: "refresh_token",
+        refresh_token: "your_refresh_token", // Replace with the actual refresh token
+        client_id: "your_client_id",
+        client_secret: "your_client_secret",
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(
+        `Error refreshing token: ${response.status} ${response.statusText}`
+      );
+    }
+
+    const data = await response.json();
+    return data.access_token; // Return the refreshed token
+  } catch (error) {
+    console.error("Error refreshing token:", error);
+    throw new Error("Failed to refresh token");
+  }
+}
+
 
 module.exports = {
   getUserInfo,
@@ -285,4 +314,5 @@ module.exports = {
   getUserTransactions,
   getUserDirectDebits,
   getUserStandingOders,
+  refreshUserToken,
 };

@@ -38,7 +38,9 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     console.log("Email:", email);
     console.log("Password:", password);
+
     const user = await AuthUser.findOne({ email });
+    console.log("User:", user);
     if (!user) {
       return res.status(401).json({ error: "Invalid email or password" });
     }
