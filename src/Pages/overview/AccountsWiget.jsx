@@ -4,6 +4,7 @@ import refresh from "../../imgs/refresh.svg";
 import add from "../../imgs/add.svg";
 import BankAcccount from "./BankAcccount";
 import { Link } from "react-router-dom";
+import { storeUserData } from "../../utils/apiCalls";
 
 function AccountsWiget() {
   const accessToken = localStorage.getItem("access_token");
@@ -32,7 +33,11 @@ function AccountsWiget() {
       if (response.ok) {
         console.log("Token refreshed successfully:", data.token);
         localStorage.setItem("access_token", data.token); // Update the access token in localStorage
-        alert("Token refreshed successfully!");
+
+        // Call the function to store all user data
+        await storeUserData();
+
+        console.log("Token refreshed successfully!");
       } else {
         console.error("Error refreshing token:", data.error);
         alert("Failed to refresh token. Please try again.");
@@ -96,10 +101,13 @@ function AccountsWiget() {
     fetchBalances();
   }, [cards, accounts]);
 
-  const totalAmount = [...cards, ...accounts].reduce((acc, current) => {
+  const totalAmount = [
+    ...(Array.isArray(cards) ? cards : []),
+    ...(Array.isArray(accounts) ? accounts : []),
+  ].reduce((acc, current) => {
     const amount =
-      current.account_id in balances
-        ? balances[current.account_id]?.available
+      current?.account_id && balances[current.account_id]?.available
+        ? balances[current.account_id].available
         : 0;
     return acc + amount;
   }, 0);

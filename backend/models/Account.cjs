@@ -12,7 +12,8 @@ const baseSchema = new Schema({
     provider_id: { type: String, required: true },
     logo_uri: { type: String, required: true },
   },
-});
+}
+, { timestamps: true });
 
 const accountSchema = new Schema({
   account_type: {

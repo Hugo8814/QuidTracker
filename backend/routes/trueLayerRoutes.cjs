@@ -32,7 +32,7 @@ router.post("/store-user-data", async (req, res) => {
       accessToken,
       userId
     );
-    const directDebit = await getUserDirectDebits(
+    const directDebits = await getUserDirectDebits(
       accounts,
       accessToken,
       userId
@@ -44,9 +44,17 @@ router.post("/store-user-data", async (req, res) => {
     );
     const authUser = await storeUserToken(userId, accessToken, refreshToken);
 
-    res.json(
-      `success: ,\n ${userInfo},\n ${accounts},\n ${transactions},\n ${directDebit}, ${standingOrders} ,\n ${balances} ,\n ${authUser}`
-    );
+    // Return a structured response
+    res.json({
+      success: true,
+      userInfo,
+      accounts,
+      balances,
+      transactions,
+      directDebits,
+      standingOrders,
+      authUser,
+    });
   } catch (error) {
     console.error("Error fetching user data:", error);
     res.status(500).json({ error: "Failed to fetch user data" });

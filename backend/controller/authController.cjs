@@ -134,7 +134,7 @@ const getToken = async (req, res) => {
 const storeUserToken = async (userId, accessToken, refreshToken) => {
   try {
     const authUser = await AuthUser.findOneAndUpdate(
-      { userId },
+      { _id: new mongoose.Types.ObjectId(userId) },
       { $set: { token: accessToken, refresh_token: refreshToken } }, // Save both tokens
       { new: true, upsert: true } // Create a new document if it doesn't exist
     );

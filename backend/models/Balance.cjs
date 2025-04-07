@@ -15,7 +15,7 @@ const BalanceSchema = new Schema({
   payment_due: Number,
   payment_due_date: Date,
   update_timestamp: Date,
-});
+}, { timestamps: true });
 
 const Balance = mongoose.model("Balance", BalanceSchema);
 module.exports = Balance;

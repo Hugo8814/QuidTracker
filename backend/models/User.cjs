@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
+ 
   userId: { type: String, required: true },
   update_timestamp: { type: Date, required: true },
   full_name: { type: String, required: true },
@@ -17,7 +18,8 @@ const userSchema = new Schema({
   ],
   emails: [{ type: String, required: true }],
   phones: [{ type: String, required: true }],
-});
+  
+}, { timestamps: true });
 
 const User = mongoose.model("User", userSchema);
 

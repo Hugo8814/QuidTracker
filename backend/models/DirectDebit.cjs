@@ -14,7 +14,8 @@ const directDebitSchema = new Schema({
     provider_mandate_identification: String,
   },
   account_id: { type: String, ref: "Account" },
-});
+}
+, { timestamps: true });
 
 const DirectDebit = mongoose.model("DirectDebit", directDebitSchema);
 

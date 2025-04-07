@@ -67,7 +67,6 @@ function OverviewPage() {
           <TransactionWiget />
         </div>
         <div className="w-[50%] h-[40rem] rounded-xl bg-white">
-         
           <SpendingWiget />
         </div>
       </div>

@@ -13,19 +13,33 @@ const CLIENT_SECRET = "a8b948ed-a40b-4d72-a612-f84a75dab83a";
 
 // Utility function to handle fetch requests
 async function fetchData(url, accessToken) {
-  const response = await fetch(url, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-  });
-  if (!response.ok) {
-    throw new Error(
-      `Error fetching data from ${url}: ${response.status} ${response.statusText}`
-    );
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.error(
+        `Error fetching data from ${url}: ${response.status} ${response.statusText}`
+      );
+      if (response.status === 501) {
+        // Return an empty array or null for unsupported endpoints
+        return { results: [] };
+      }
+      throw new Error(
+        `Error fetching data from ${url}: ${response.statusText}`
+      );
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error(`Error fetching data from ${url}:`, error);
+    throw error;
   }
-  return await response.json();
 }
 
 // Function to process and save data from API response
@@ -70,39 +84,35 @@ async function getUserAccounts(accessToken, userId) {
       `https://${URL}/data/v1/accounts`,
       accessToken
     );
-    if (!accountsData.results || accountsData.results.length === 0) {
-      console.log("No account data found for this user");
-      return "No account data found";
-    }
-    accountsData.results.forEach((account) => {
-      account.update_timestamp = new Date(account.update_timestamp);
-    });
-    await processApiResponse(accountsData, Account, { userId }, userId);
 
     const cardsData = await fetchData(
       `https://${URL}/data/v1/cards`,
       accessToken
     );
-    if (!cardsData.results || cardsData.results.length === 0) {
-      console.log("No card data found for this user");
-      return "No card data found";
-    }
-    await processApiResponse(cardsData, Card, { userId }, userId);
 
-    const accountIds = {
-      accountIds: accountsData.results.map((account) => account.account_id),
-      cardIds: cardsData.results.map((card) => card.account_id),
+    // Initialize empty arrays for accounts and cards
+    const accounts = accountsData.results || [];
+    const cards = cardsData.results || [];
+
+    // Process accounts if they exist
+    if (accounts.length > 0) {
+      await processApiResponse(accountsData, Account, { userId }, userId);
+    }
+
+    // Process cards if they exist
+    if (cards.length > 0) {
+      await processApiResponse(cardsData, Card, { userId }, userId);
+    }
+
+    // Return the IDs even if empty
+    return {
+      accountIds: accounts.map((account) => account.account_id),
+      cardIds: cards.map((card) => card.account_id)
     };
-
-    return accountIds;
   } catch (error) {
-    if (error.response && error.response.status === 404) {
-      console.log("No account data found for this user");
-      return "No account data found";
-    } else {
-      console.error("Error fetching account data:", error);
-      throw error;
-    }
+    console.error("Error fetching account/card data:", error);
+    // Return empty arrays if there's an error
+    return { accountIds: [], cardIds: [] };
   }
 }
 // Fetch and save user balances
