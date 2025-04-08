@@ -107,7 +107,7 @@ async function getUserAccounts(accessToken, userId) {
     // Return the IDs even if empty
     return {
       accountIds: accounts.map((account) => account.account_id),
-      cardIds: cards.map((card) => card.account_id)
+      cardIds: cards.map((card) => card.account_id),
     };
   } catch (error) {
     console.error("Error fetching account/card data:", error);
@@ -161,85 +161,41 @@ async function getUserBalances(Ids, accessToken, userId) {
 // Fetch and save user transactions
 async function getUserTransactions(Ids, accessToken, userId) {
   const { accountIds, cardIds } = Ids;
+  console.log("Processing transactions for cardIds:", cardIds); // Add logging
 
-  const accountTransactionPromises = accountIds.map(async (accountId) => {
-    const accountTransactionsData = await fetchData(
-      `https://api.truelayer-sandbox.com/data/v1/accounts/${accountId}/transactions`,
-      accessToken
-    );
-    const limitedTransactions = accountTransactionsData.results.slice(0, 200); // Limit to 200 transactions
-    await processApiResponse(
-      { results: limitedTransactions },
-      Transaction,
-      {
-        account_id: accountId.toString(),
-        pending: false,
-        userId,
-      },
-      userId
-    );
-  });
   const cardTransactionPromises = cardIds.map(async (cardId) => {
-    const cardTransactionsData = await fetchData(
-      `https://${URL}/data/v1/cards/${cardId}/transactions`,
-      accessToken
-    );
-    await processApiResponse(
-      cardTransactionsData,
-      Transaction,
-      {
-        card_id: cardId.toString(),
-        pending: false,
-        userId,
-      },
-      userId
-    );
-  });
-
-  const pendingAccountTransactionPromises = accountIds.map(
-    async (accountId) => {
-      const pendingAccountTransactionsData = await fetchData(
-        `https://api.truelayer-sandbox.com/data/v1/accounts/${accountId}/transactions/pending`,
+    console.log(`Fetching transactions for card ${cardId}`); // Add logging
+    try {
+      const cardTransactionsData = await fetchData(
+        `https://${URL}/data/v1/cards/${cardId}/transactions`,
         accessToken
       );
-      await processApiResponse(
-        pendingAccountTransactionsData,
-        Transaction,
-        {
-          account_id: accountId.toString(),
-          pending: true,
-          userId,
-        },
-        userId
-      );
-    }
-  );
+      console.log("Card transactions data:", cardTransactionsData); // Add logging
 
-  const pendingCardTransactionPromises = cardIds.map(async (cardId) => {
-    const pendingCardTransactionsData = await fetchData(
-      `https://${URL}/data/v1/cards/${cardId}/transactions/pending`,
-      accessToken
-    );
-    await processApiResponse(
-      pendingCardTransactionsData,
-      Transaction,
-      {
-        card_id: cardId.toString(),
-        pending: true,
-        userId,
-      },
-      userId
-    );
+      if (
+        cardTransactionsData.results &&
+        cardTransactionsData.results.length > 0
+      ) {
+        await processApiResponse(
+          cardTransactionsData,
+          Transaction,
+          {
+            card_id: cardId.toString(),
+            pending: false,
+            userId,
+          },
+          userId
+        );
+        console.log(`Successfully processed transactions for card ${cardId}`);
+      } else {
+        console.log(`No transactions found for card ${cardId}`);
+      }
+    } catch (error) {
+      console.error(`Error processing transactions for card ${cardId}:`, error);
+    }
   });
 
-  await Promise.all([
-    ...accountTransactionPromises,
-    ...cardTransactionPromises,
-    ...pendingAccountTransactionPromises,
-    ...pendingCardTransactionPromises,
-  ]);
-
-  return "Transactions stored successfully";
+  await Promise.all(cardTransactionPromises);
 }
 
 // Fetch and save user direct debits

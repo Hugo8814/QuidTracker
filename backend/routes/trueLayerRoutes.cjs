@@ -80,4 +80,32 @@ router.post("/refresh-token", async (req, res) => {
   }
 });
 
+router.get('/bank-logo/*', async (req, res) => {
+  try {
+    // Get the full URL from the path by removing '/bank-logo/'
+    const logoUrl = req.params[0];
+    
+    console.log('Attempting to fetch logo from:', logoUrl);
+
+    const response = await fetch(logoUrl);
+    
+    if (!response.ok) {
+      console.error('Logo fetch failed with status:', response.status);
+      throw new Error(`Failed to fetch logo: ${response.statusText}`);
+    }
+
+    const contentType = response.headers.get('content-type');
+    console.log('Content-Type:', contentType);
+
+    // Forward the content type
+    res.set('Content-Type', contentType);
+    
+    // Stream the response
+    response.body.pipe(res);
+  } catch (error) {
+    console.error('Error fetching bank logo:', error);
+    res.status(500).json({ error: 'Failed to fetch bank logo' });
+  }
+});
+
 module.exports = router;

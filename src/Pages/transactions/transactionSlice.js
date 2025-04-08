@@ -31,10 +31,7 @@ export const getRecurringTransactions = (state) =>
 export const getTransactionsTotal = createSelector(
   [getTransactions],
   (transactions) =>
-    transactions.reduce(
-      (total, item) => total + (item.running_balance?.amount || 0),
-      0
-    )
+    transactions.reduce((total, item) => total + (item.amount || 0), 0)
 );
 
 export const getMonthlySpending = createSelector(
@@ -59,13 +56,11 @@ export const getMonthlySpending = createSelector(
         };
       }
 
-      if (transaction.running_balance && transaction.running_balance.amount) {
-        if (transaction.running_balance.amount > 0) {
-          monthlySpending[month].income += transaction.running_balance.amount;
+      if (transaction && transaction.amount) {
+        if (transaction.amount > 0) {
+          monthlySpending[month].income += transaction.amount;
         } else {
-          monthlySpending[month].expenses += Math.abs(
-            transaction.running_balance.amount
-          );
+          monthlySpending[month].expenses += Math.abs(transaction.amount);
         }
         monthlySpending[month].total =
           monthlySpending[month].income - monthlySpending[month].expenses;
@@ -96,13 +91,11 @@ export const getMonthlyData = createSelector(
         };
       }
 
-      if (transaction.running_balance && transaction.running_balance.amount) {
-        if (transaction.running_balance.amount > 0) {
-          monthlyData[month][day].income += transaction.running_balance.amount;
+      if (transaction && transaction.amount) {
+        if (transaction.amount > 0) {
+          monthlyData[month][day].income += transaction.amount;
         } else {
-          monthlyData[month][day].expenses += Math.abs(
-            transaction.running_balance.amount
-          );
+          monthlyData[month][day].expenses += Math.abs(transaction.amount);
         }
       }
     });

@@ -106,8 +106,8 @@ function AccountsWiget() {
     ...(Array.isArray(accounts) ? accounts : []),
   ].reduce((acc, current) => {
     const amount =
-      current?.account_id && balances[current.account_id]?.available
-        ? balances[current.account_id].available
+      (current?.account_id && balances[current.account_id]?.current) || 0
+        ? balances[current.account_id].current || 0
         : 0;
     return acc + amount;
   }, 0);
@@ -126,12 +126,18 @@ function AccountsWiget() {
           >
             <BankAcccount
               bankImg={item.provider.logo_uri}
-              amount={balances[item.account_id]?.available}
+              amount={balances[item.account_id]?.current || 0}
               accountType={item.card_type || item.account_type}
               bankName={item.provider.display_name}
             />
           </div>
         ))}
+        <img
+          src="https://truelayer-client-logos.s3-eu-west-1.amazonaws.com/banks/banks-icons/ob-capital-one-icon.svg"
+          alt="Capital One"
+          width={32}
+          height={32}
+        />
       </div>
       <div className="grid grid-cols-1 items-center">
         <div
