@@ -1,50 +1,47 @@
 import { useState } from "react";
 
-const BankLogo = ({ logoUri, bankName }) => {
-  const [imageError, setImageError] = useState(false);
+import capitalOneLogo from "../../imgs/banklogos/capital-one-seeklogo.png";
+import BankTest from "../../imgs/banklogos/banktest.svg";
 
-  const getInitials = (name) => {
-    return name
-      .split("-")
-      .map((word) => word.charAt(0))
-      .join("")
-      .toUpperCase();
-  };
+export const bankLogoMap = {
+  "ob-capital-one": capitalOneLogo,
 
-  const proxyLogoUrl = logoUri
-    ? `http://localhost:3000/api/truelayer/bank-logo/${logoUri}`
-    : null;
+  default: BankTest, // Default fallback
+};
 
-  if (imageError || !proxyLogoUrl) {
+export const getBankLogo = (providerId) => {
+  return bankLogoMap[providerId] || bankLogoMap.default;
+};
+const BankLogo = ({ providerId, displayName }) => {
+  const logoUrl = getBankLogo(providerId);
+
+  if (!providerId) {
     return (
       <div
         className="bank-logo-fallback"
         style={{
           width: "40px",
           height: "40px",
-          backgroundColor: "#f0f0f0",
+          backgroundColor: "#0055ff",
           borderRadius: "50%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           fontSize: "16px",
           fontWeight: "bold",
-          color: "#333",
+          color: "#ffffff",
         }}
       >
-        {getInitials(bankName)}
+        {bankDetails.name.split(" ")[0][0]}
       </div>
     );
   }
 
   return (
     <img
-      src={proxyLogoUrl}
-      alt={`${bankName} logo`}
-      onError={(e) => {
-        console.error("Image failed to load:", e);
-        setImageError(true);
-      }}
+      src={logoUrl}
+      alt={`${displayName} name logo`}
+      className=""
       style={{
         width: "40px",
         height: "40px",

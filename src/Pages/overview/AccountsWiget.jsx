@@ -129,15 +129,10 @@ function AccountsWiget() {
               amount={balances[item.account_id]?.current || 0}
               accountType={item.card_type || item.account_type}
               bankName={item.provider.display_name}
+              providerId={item.provider.provider_id}
             />
           </div>
         ))}
-        <img
-          src="https://truelayer-client-logos.s3-eu-west-1.amazonaws.com/banks/banks-icons/ob-capital-one-icon.svg"
-          alt="Capital One"
-          width={32}
-          height={32}
-        />
       </div>
       <div className="grid grid-cols-1 items-center">
         <div
