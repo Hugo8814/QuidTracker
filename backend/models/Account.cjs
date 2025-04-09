@@ -1,19 +1,21 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const baseSchema = new Schema({
-  userId: { type: String, required: true },
-  account_id: { type: String, required: true },
-  currency: { type: String, required: true },
-  display_name: { type: String, required: true },
-  update_timestamp: { type: Date, required: true },
-  provider: {
+const baseSchema = new Schema(
+  {
+    userId: { type: String, required: true },
+    account_id: { type: String, required: true },
+    currency: { type: String, required: true },
     display_name: { type: String, required: true },
-    provider_id: { type: String, required: true },
-    logo_uri: { type: String, required: true },
+    update_timestamp: { type: Date, required: true },
+    provider: {
+      display_name: { type: String, required: true },
+      provider_id: { type: String, required: true },
+      logo_uri: { type: String, required: true },
+    },
   },
-}
-, { timestamps: true });
+  { timestamps: true }
+);
 
 const accountSchema = new Schema({
   account_type: {
@@ -31,7 +33,7 @@ const accountSchema = new Schema({
 
 const cardSchema = new Schema({
   card_network: { type: String, required: true, enum: ["MASTERCARD", "VISA"] },
-  card_type: { type: String, required: true, enum: ["CREDIT"] },
+  card_type: { type: String, required: true },
   partial_card_number: { type: String, required: true },
   name_on_card: { type: String, required: true },
 });

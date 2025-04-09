@@ -20,8 +20,8 @@ const BankLogo = ({ providerId, displayName }) => {
       <div
         className="bank-logo-fallback"
         style={{
-          width: "40px",
-          height: "40px",
+          width: "60px",
+          height: "60px",
           backgroundColor: "#0055ff",
           borderRadius: "50%",
           display: "flex",

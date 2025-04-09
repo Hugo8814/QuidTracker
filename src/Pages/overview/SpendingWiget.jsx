@@ -19,10 +19,8 @@ import { Link } from "react-router-dom";
 import { get } from "mongoose";
 
 function SpendingWiget() {
-  const dispatch = useDispatch();
-  const spendingData = useSelector(getSpendingData);
   const data = useSelector(getTransactions);
-  console.log(data);
+
   //   const spendingTotal = useSelector(getSpendingTotal);
   //   const spentTotal = spendingData.reduce(
   //     (total, item) => total + item.spent,
@@ -36,21 +34,20 @@ function SpendingWiget() {
   //       theme: item.theme, // Color for the pie slice
   //     }));
   //   }, [spendingData]);
-  if (!spendingData) {
-    return null;
-  }
+
   if (!data) {
     return null;
   }
 
-  const total = useSelector(getTransactionsTotal);
   const MonthlySpending = useSelector(getMonthlySpending);
-  console.log("monthly", MonthlySpending);
 
   const today = new Date();
   const currentDay = today.toLocaleDateString("GB", {
     day: "numeric",
     month: "short",
+  });
+  const currentMonth = today.toLocaleDateString("GB", {
+    month: "long",
   });
 
   const MonthlyData = useSelector(getMonthlyData);
@@ -71,7 +68,7 @@ function SpendingWiget() {
         <div className="flex justify-between">
           <div className="flex flex-col ">
             <div className="text-2xl gap-2 font-semibold text-gray-500">
-              March spending
+              {currentMonth} spending
             </div>
             <div className="text-3xl  font-semibold">
               {formatCurrency(MonthlySpending?.March?.total.toFixed(2))}
@@ -90,7 +87,7 @@ function SpendingWiget() {
         <div className="flex justify-center translate-y-[-20%]">
           <div className="flex  shadow-[0_4px_16px_4px_rgba(0,0,0,0.1)] rounded-lg p-4 ">
             <div className=" flex gap-2 text-2xl font-bold  text-[red] items-center">
-              £{32}
+              fix
               <div className="w-5">
                 <img src={up} alt="" />
               </div>

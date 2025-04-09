@@ -134,12 +134,12 @@ export const categorizeTransaction = (transaction) => {
         });
 
         if (hasMatch) {
-          console.log("Found merchant match:", {
-            merchant,
-            logo: merchantData.logo,
-            description,
-            merchantName,
-          });
+          // console.log("Found merchant match:", {
+          //   merchant,
+          //   logo: merchantData.logo,
+          //   description,
+          //   merchantName,
+          // });
 
           // Verify logo import
           if (!merchantData.logo) {

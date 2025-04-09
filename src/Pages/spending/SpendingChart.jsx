@@ -5,39 +5,59 @@ import { LineChart, Line, XAxis, Tooltip, ResponsiveContainer } from "recharts";
 
 export default function SpendingChart({ data }) {
   if (!data || Object.keys(data).length === 0) {
-    console.log("No data available");
     return <div>No data available</div>;
   }
 
-  // Get all months available in the data
   const months = Object.keys(data).sort((a, b) => new Date(a) - new Date(b));
-  console.log(months);
+  const latestMonth = months[0];
+  const prevMonth = months[1];
 
-  // Determine latest month and previous month
-  const latestMonth = months[0]; // Most recent month
-  const prevMonth = months[1]; // Previous month
+  // Get the current day
+  const today = new Date();
+  const currentDay = today.getDate();
 
-  // Process data
-  const data2 = Object.keys(data[latestMonth]).map((day) => ({
-    name: `${day} ${latestMonth}`,
-    // currentMonth:
-    //   data[latestMonth][day].income - data[latestMonth][day].expenses,
-    // prevMonth: prevMonth
-    //   ? data[prevMonth][day]?.income - data[prevMonth][day]?.expenses
-    //   : 0,
-    currentMonth: data[latestMonth][day].expenses,
-    prevMonth: prevMonth ? data[prevMonth][day]?.income || 0 : 0,
-  }));
+  // Helper function to get all days in a month
+  const getDaysInMonth = (month) => {
+    const date = new Date(2025, new Date().getMonth(), 1); // Using 2025 as your data is in 2025
+    return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+  };
 
-  console.log("Processed Data:", data2);
+  // Create cumulative data
+  const maxDaysInLatestMonth = getDaysInMonth(latestMonth);
+  const data2 = Array.from({ length: maxDaysInLatestMonth }, (_, i) => {
+    const day = i + 1;
 
-  // X-axis labels: First day of prevMonth, middle of latestMonth, last day of latestMonth
+    let currentMonthTotal = 0;
+    let prevMonthTotal = 0;
+
+    // For current month, only calculate up to the current day
+    if (day <= currentDay) {
+      for (let d = 1; d <= day; d++) {
+        currentMonthTotal += data[latestMonth][d]?.expenses || 0;
+      }
+    }
+
+    // For previous month, calculate for all days
+    if (prevMonth) {
+      for (let d = 1; d <= day; d++) {
+        prevMonthTotal += data[prevMonth][d]?.expenses || 0;
+      }
+    }
+
+    return {
+      name: `${day} ${latestMonth}`,
+      currentMonth: day <= currentDay ? currentMonthTotal : null, // Stop currentMonth after today
+      prevMonth: prevMonthTotal, // Continue prevMonth for all days
+    };
+  });
+
   const xAxisTicks = [
     `1 ${latestMonth}`,
-    `15 ${latestMonth}`,
-    `${Object.keys(data[latestMonth]).pop()} ${latestMonth}`,
-  ].filter(Boolean); // Remove null values
+    `${Math.floor(maxDaysInLatestMonth / 2)} ${latestMonth}`,
+    `${maxDaysInLatestMonth} ${latestMonth}`,
+  ];
 
+  console.log(data2);
   return (
     <ResponsiveContainer width="100%" height={250}>
       <LineChart
@@ -57,14 +77,19 @@ export default function SpendingChart({ data }) {
           axisLine={false}
           tickLine={false}
           tick={{ fill: "#6b6b6b" }}
-          ticks={xAxisTicks} // Dynamically generated ticks
+          ticks={xAxisTicks}
+          tickFormatter={(value) => {
+            // Extract just the day number from the data point
+            const day = value.split(" ")[0];
+            return `${day} ${latestMonth}`;
+          }}
         />
         <Line
           dataKey="prevMonth"
           stroke="#e8e8e8"
           strokeWidth={3}
           dot={(props) =>
-            props.payload.name === xAxisTicks[0] ? (
+            props.payload.name === `${maxDaysInLatestMonth} ${latestMonth}` ? (
               <circle
                 key={props.payload.name}
                 cx={props.cx}
@@ -80,8 +105,7 @@ export default function SpendingChart({ data }) {
           stroke="#0055ff"
           strokeWidth={3}
           dot={(props) =>
-            props.payload.name === xAxisTicks[xAxisTicks.length - 1] &&
-            props.payload.currentMonth !== 0 ? (
+            props.payload.name === `${currentDay} ${latestMonth}` ? (
               <circle
                 key={props.payload.name}
                 cx={props.cx}

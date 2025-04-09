@@ -75,9 +75,10 @@ export const getMonthlyData = createSelector(
   (transactions) => {
     const monthlyData = {};
 
+    // First, collect all the data as before
     transactions.forEach((transaction) => {
       const date = new Date(transaction.timestamp);
-      const month = date.toLocaleString("default", { month: "long" });
+      const month = date.toLocaleString("default", { month: "short" });
       const day = date.getDate();
 
       if (!monthlyData[month]) {
@@ -88,6 +89,7 @@ export const getMonthlyData = createSelector(
         monthlyData[month][day] = {
           expenses: 0,
           income: 0,
+          timestamp: date.toISOString(),
         };
       }
 
@@ -100,7 +102,17 @@ export const getMonthlyData = createSelector(
       }
     });
 
-    return monthlyData;
+    // Sort the months based on timestamps
+    return Object.entries(monthlyData)
+      .sort(([, daysA], [, daysB]) => {
+        const timestampA = Object.values(daysA)[0]?.timestamp;
+        const timestampB = Object.values(daysB)[0]?.timestamp;
+        return new Date(timestampB) - new Date(timestampA);
+      })
+      .reduce((acc, [month, days]) => {
+        acc[month] = days;
+        return acc;
+      }, {});
   }
 );
 

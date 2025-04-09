@@ -20,7 +20,7 @@ function TransactionWiget() {
                     <img
                       src={result.logo}
                       alt={item.meta.provider_merchant_name}
-                      className="w-16 h-16 rounded-full object-contain"
+                      className="w-16 h-16 rounded-xl object-contain"
                       onError={(e) =>
                         handleImageError(e, item.meta.provider_merchant_name)
                       }

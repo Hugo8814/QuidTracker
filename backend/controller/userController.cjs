@@ -286,30 +286,65 @@ async function getOverviewData(req, res) {
   try {
     const userId = req.params.userId.trim();
 
+    // Fetch all necessary data
     const user = await User.findOne({ userId: userId });
     const accounts = await Account.find({ userId: userId });
     const cards = await Card.find({ userId: userId });
     const balances = await Balance.find({ userId: userId });
-    const transactions = await Transaction.find({ userId: userId });
+    const transactions = await Transaction.find({ userId: userId }).sort({
+      timestamp: -1, // Sort transactions by newest to oldest
+    });
     const standingOrders = await StandingOrder.find({ userId: userId });
     const directDebits = await DirectDebit.find({ userId: userId });
 
+    // Process cards to adjust balances for credit cards
+    const processedCards = cards.map((card) => {
+      if (card.card_type === "CREDIT") {
+        // Find the balance associated with this card
+        const associatedBalance = balances.find(
+          (balance) => balance.accountId === card.account_id
+        );
+
+        // If a balance exists, make it negative
+        if (associatedBalance) {
+          associatedBalance.current = -Math.abs(associatedBalance.current);
+        }
+      }
+      return card;
+    });
+
+    // Process transactions to reverse amounts for credit cards
+    const processedTransactions = transactions.map((transaction) => {
+      // Find the card associated with the transaction
+      const associatedCard = cards.find(
+        (card) => card.account_id === transaction.card_id
+      );
+
+      if (associatedCard && associatedCard.card_type === "CREDIT") {
+        // Reverse transaction amounts for credit cards
+        transaction.amount = -transaction.amount;
+      }
+      return transaction;
+    });
+
+    // Construct the overview data object
     const overviewData = {
       user,
       accounts: accounts || [],
-      cards: cards || [],
+      cards: processedCards || [],
       balances: balances || [],
-      transactions: transactions || [],
+      transactions: processedTransactions || [],
       standingOrders: standingOrders || [],
       directDebits: directDebits || [],
     };
 
+    // Send the response
     res.status(200).json(overviewData);
   } catch (error) {
-    res.status(404).json({ error: error.message });
+    // Handle errors
+    res.status(500).json({ error: error.message });
   }
 }
-
 module.exports = {
   getUser,
   getUserCards,
