@@ -13,6 +13,7 @@ import { Link } from "react-router-dom";
 // import AddNewTransaction from "../../ui/AddNewTransaction";
 // import filter from "../../../assets/images/icon-filter-mobile.svg";
 import { useMediaQuery } from "react-responsive";
+import TransactionItem from "../../utils/components/transactions/TransactionItem";
 
 function TransactionsPage() {
   const transactions = useSelector(getTransactions);
@@ -340,8 +341,19 @@ function TransactionsPage() {
               </th>
             </tr>
           </thead>
-
           <tbody>
+            {transactions &&
+              transactions
+                .slice(start, end)
+                .map((transaction) => (
+                  <TransactionItem
+                    key={transaction.transaction_id}
+                    transaction={transaction}
+                  />
+                ))}
+          </tbody>
+
+          {/* <tbody>
             {transactions &&
               transactions.slice(start, end).map((item, index) => (
                 <tr key={index} className="border-t ">
@@ -378,7 +390,7 @@ function TransactionsPage() {
                   </td>
                 </tr>
               ))}
-          </tbody>
+          </tbody> */}
         </table>
 
         {/* <div className="flex justify-between mt-14 items-center">

@@ -1,4 +1,4 @@
-import BankLogo from "./BankLogo.jsx";
+import BankLogo from "../../utils/components/Accounts/BankLogo.jsx";
 
 function BankAcccount({ bankImg, amount, accountType, bankName, providerId }) {
   // const [imageError, setImageError] = useState(false);}) {

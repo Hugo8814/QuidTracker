@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import capitalOneLogo from "../../imgs/banklogos/capital-one-seeklogo.png";
-import BankTest from "../../imgs/banklogos/banktest.svg";
+import capitalOneLogo from "../../../imgs/banklogos/capital-one-seeklogo.png";
+import BankTest from "../../../imgs/banklogos/banktest.svg";
 
 export const bankLogoMap = {
   "ob-capital-one": capitalOneLogo,
@@ -43,8 +43,8 @@ const BankLogo = ({ providerId, displayName }) => {
       alt={`${displayName} name logo`}
       className=""
       style={{
-        width: "40px",
-        height: "40px",
+        width: "60px",
+        height: "60px",
         objectFit: "contain",
       }}
     />
